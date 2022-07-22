@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane minHeight="250.0" prefHeight="298.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
+   <children>
+      <TextField fx:id="txtBefore" alignment="CENTER_RIGHT" layoutX="146.0" layoutY="55.0" prefHeight="35.0" prefWidth="155.0">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="txtDiscount" alignment="CENTER_RIGHT" layoutX="146.0" layoutY="106.0" prefHeight="35.0" prefWidth="155.0">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="txtAfter" alignment="CENTER_RIGHT" layoutX="146.0" layoutY="153.0" prefHeight="35.0" prefWidth="155.0">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="txtYouSaved" alignment="CENTER_RIGHT" layoutX="146.0" layoutY="198.0" prefHeight="35.0" prefWidth="155.0">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <Label layoutX="22.0" layoutY="55.0" prefHeight="35.0" prefWidth="99.0" text="Para">
+         <font>
+            <Font name="System Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="22.0" layoutY="106.0" prefHeight="35.0" prefWidth="99.0" text="Zbritja">
+         <font>
+            <Font name="System Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="22.0" layoutY="198.0" prefHeight="35.0" prefWidth="99.0" text="Ju kurseni">
+         <font>
+            <Font name="System Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="22.0" layoutY="153.0" prefHeight="35.0" prefWidth="99.0" text="Pas">
+         <font>
+            <Font name="System Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="319.0" layoutY="55.0" prefHeight="35.0" prefWidth="36.0" text="EUR">
+         <font>
+            <Font name="System Italic" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="319.0" layoutY="153.0" prefHeight="35.0" prefWidth="36.0" text="EUR">
+         <font>
+            <Font name="System Italic" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="319.0" layoutY="198.0" prefHeight="35.0" prefWidth="36.0" text="EUR">
+         <font>
+            <Font name="System Italic" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="319.0" layoutY="106.0" prefHeight="35.0" prefWidth="36.0" text="\%">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="28.0" layoutY="14.0" prefHeight="36.0" prefWidth="99.0" text="Zbritje" textFill="#3da421">
+         <font>
+            <Font name="System Bold Italic" size="25.0" />
+         </font>
+      </Label>
+      <Button fx:id="resetBtn" alignment="CENTER" cacheShape="false" layoutX="22.0" layoutY="244.0" mnemonicParsing="false" onAction="#resetOnAction" prefHeight="40.0" prefWidth="40.0" scaleShape="false">
+         <graphic>
+            <ImageView fitHeight="44.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/reset.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+   </children>
+</AnchorPane>
