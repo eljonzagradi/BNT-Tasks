@@ -61,5 +61,12 @@ public class CalendarController {
 	private ListView lv_5_4;
 	@FXML
 	private ListView lv_6_4;
+	
+	ListView[] array = {
+			{lv_0_1},
+			{},
+			{},
+			{},
+			{} };
 
 }
