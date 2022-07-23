@@ -166,13 +166,9 @@ public class MainController implements Initializable  {
 	public void setListener(TextField txt) {
 		
 		txt.textProperty().addListener(e -> {
-			
-		    getValue();				
+			getValue();				
 			calculate();
-			//printResult();
-			
-		});
-		
+			});
 	}
 	
 	public void resetOnAction() {
