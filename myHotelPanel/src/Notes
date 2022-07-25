@@ -1,4 +1,5 @@
-@FXML TableView<Reservation> table;
+
+   @FXML TableView<Reservation> table;
 	
 	@FXML TableColumn<Reservation,String> nameC;
 	@FXML TableColumn<Reservation,String> surnameC;
@@ -9,7 +10,7 @@
 	
 	@FXML ListView<Integer> roomList;
 	
-			nameC.setCellValueFactory(new PropertyValueFactory<>("name"));
+		nameC.setCellValueFactory(new PropertyValueFactory<>("name"));
 		surnameC.setCellValueFactory(new PropertyValueFactory<>("surname"));
 	
 		checkinC.setCellValueFactory(new PropertyValueFactory<Reservation, LocalDate>("checkin"));
@@ -18,3 +19,15 @@
 		priceC.setCellValueFactory(new PropertyValueFactory<Reservation, Double>("price"));
 		roomC.setCellValueFactory(new PropertyValueFactory<Reservation, Integer>("room"));
 	
+	LocalDate currentdate = LocalDate.now();
+	int currentDay = currentdate.getDayOfMonth();
+	Month currentMonth = currentdate.getMonth();
+	int currentYear = currentdate.getYear();
+
+	
+	public Label[][] day = { 
+			                 {lbl_00,lbl_01,lbl_02,lbl_03,lbl_04,lbl_05,lbl_06},
+			                 {lbl_00,lbl_01,lbl_02,lbl_03,lbl_04,lbl_05,lbl_06},
+                             {lbl_00,lbl_01,lbl_02,lbl_03,lbl_04,lbl_05,lbl_06},
+                             {lbl_00,lbl_01,lbl_02,lbl_03,lbl_04,lbl_05,lbl_06},
+                             {lbl_00,lbl_01,lbl_02,lbl_03,lbl_04,lbl_05,lbl_06}};
