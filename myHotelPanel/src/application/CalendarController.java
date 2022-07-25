@@ -1,72 +1,44 @@
 package application;
 
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.ResourceBundle;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-
+import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
-public class CalendarController {
-	@FXML
-	private ListView lv_0_1;
-	@FXML
-	private ListView lv_1_1;
-	@FXML
-	private ListView lv_2_1;
-	@FXML
-	private ListView lv_3_1;
-	@FXML
-	private ListView lv_4_1;
-	@FXML
-	private ListView lv_5_1;
-	@FXML
-	private ListView lv_6_1;
-	@FXML
-	private ListView lv_0_2;
-	@FXML
-	private ListView lv_1_2;
-	@FXML
-	private ListView lv_2_2;
-	@FXML
-	private ListView lv_3_2;
-	@FXML
-	private ListView lv_4_2;
-	@FXML
-	private ListView lv_5_2;
-	@FXML
-	private ListView lv_6_2;
-	@FXML
-	private ListView lv_0_3;
-	@FXML
-	private ListView lv_1_3;
-	@FXML
-	private ListView lv_2_3;
-	@FXML
-	private ListView lv_3_3;
-	@FXML
-	private ListView lv_4_3;
-	@FXML
-	private ListView lv_5_3;
-	@FXML
-	private ListView lv_6_3;
-	@FXML
-	private ListView lv_0_4;
-	@FXML
-	private ListView lv_1_4;
-	@FXML
-	private ListView lv_2_4;
-	@FXML
-	private ListView lv_3_4;
-	@FXML
-	private ListView lv_4_4;
-	@FXML
-	private ListView lv_5_4;
-	@FXML
-	private ListView lv_6_4;
+public class CalendarController implements Initializable  {
 	
-	ListView[] array = {
-			{lv_0_1},
-			{},
-			{},
-			{},
-			{} };
+	@FXML TableView<Reservation> table;
+	
+	@FXML TableColumn<Reservation,String> nameC;
+	@FXML TableColumn<Reservation,String> surnameC;
+	@FXML TableColumn<Reservation, LocalDate> checkinC;
+	@FXML TableColumn<Reservation, LocalDate> checkoutC;
+	@FXML TableColumn<Reservation, Double> priceC;
+	@FXML TableColumn<Reservation, Integer> roomC;
+	
+	@FXML ListView<Integer> roomList;
+	
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		
+		nameC.setCellValueFactory(new PropertyValueFactory<>("name"));
+		surnameC.setCellValueFactory(new PropertyValueFactory<>("surname"));
+	
+		checkinC.setCellValueFactory(new PropertyValueFactory<Reservation, LocalDate>("checkin"));
+		checkoutC.setCellValueFactory(new PropertyValueFactory<Reservation, LocalDate>("checkout"));
+		
+		priceC.setCellValueFactory(new PropertyValueFactory<Reservation, Double>("price"));
+		roomC.setCellValueFactory(new PropertyValueFactory<Reservation, Integer>("room"));
 
+	
+		}
 }
