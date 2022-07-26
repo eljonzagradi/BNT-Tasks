@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SecondaryMainController">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="Open" />
+                  <MenuItem mnemonicParsing="false" text="Save" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="Import">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="FXML" />
+                        <MenuItem mnemonicParsing="false" text="Media" />
+                    </items>
+                  </Menu>
+              <MenuItem mnemonicParsing="false" onAction="#CloseApp" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <AnchorPane prefHeight="462.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <CheckBox fx:id="cb1" layoutX="35.0" layoutY="23.0" mnemonicParsing="false" onAction="#checkEvent" text="Dog" />
+            <CheckBox fx:id="cb2" layoutX="118.0" layoutY="24.0" mnemonicParsing="false" onAction="#checkEvent" text="Cat" />
+            <CheckBox fx:id="cb3" layoutX="181.0" layoutY="23.0" mnemonicParsing="false" onAction="#checkEvent" text="Cow" />
+            <CheckBox fx:id="cb4" layoutX="260.0" layoutY="23.0" mnemonicParsing="false" onAction="#checkEvent" text="Rat" />
+            <Label fx:id="lbl2" alignment="CENTER" layoutX="191.0" layoutY="67.0" prefHeight="79.0" prefWidth="116.0" />
+            <Label fx:id="lbl1" alignment="CENTER" layoutX="25.0" layoutY="57.0" prefHeight="107.0" prefWidth="166.0" />
+            <RadioButton fx:id="rb1" layoutX="368.0" layoutY="24.0" mnemonicParsing="false" onAction="#radioSelect" text="M">
+               <toggleGroup>
+                  <ToggleGroup fx:id="MyGroup" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="rb2" layoutX="418.0" layoutY="24.0" mnemonicParsing="false" onAction="#radioSelect" text="F" toggleGroup="$MyGroup" />
+            <Label fx:id="lbl3" layoutX="472.0" layoutY="23.0" prefHeight="66.0" prefWidth="110.0" />
+            <TableView fx:id="table" layoutX="218.0" layoutY="157.0" prefHeight="270.0" prefWidth="366.0">
+              <columns>
+                <TableColumn fx:id="id" prefWidth="104.0" text="id" />
+                <TableColumn fx:id="name" prefWidth="91.20001220703125" text="Name" />
+                  <TableColumn fx:id="surname" prefWidth="79.20001220703125" text="Surname" />
+                  <TableColumn fx:id="age" prefWidth="86.39996337890625" text="Age" />
+              </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

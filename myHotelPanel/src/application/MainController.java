@@ -2,14 +2,12 @@ package application;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 
-import jfxtras.scene.control.CalendarPicker;
 
 import javafx.scene.control.TableView;
 
@@ -28,7 +26,12 @@ public class MainController implements Initializable {
 	
 	@FXML private ListView<Integer> roomList;
 	
-	@FXML private CalendarPicker datePicker;
+	public void addOnAction() {
+		
+		
+		
+	}
+	
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {

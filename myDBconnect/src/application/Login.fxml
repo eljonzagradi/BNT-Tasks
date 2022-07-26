@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
+   <top>
+      <MenuBar fx:id="menu_bar" prefHeight="27.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <left>
+      <AnchorPane prefHeight="269.0" prefWidth="94.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="15.0" layoutY="224.0" prefHeight="30.0" prefWidth="295.0" />
+            <TextField fx:id="input_name" alignment="CENTER" layoutX="24.0" layoutY="60.0" prefHeight="35.0" prefWidth="130.0" promptText="Name">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="input_surname" alignment="CENTER" layoutX="169.0" layoutY="60.0" prefHeight="35.0" prefWidth="130.0" promptText="Surname">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <ChoiceBox fx:id="select_gender" layoutX="234.0" layoutY="105.0" prefHeight="30.0" prefWidth="65.0" />
+            <TextField fx:id="input_age" alignment="CENTER" layoutX="168.0" layoutY="103.0" prefHeight="35.0" prefWidth="58.0" promptText="Age">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <ListView fx:id="view_jobs" layoutX="24.0" layoutY="131.0" prefHeight="122.0" prefWidth="130.0" />
+            <Button fx:id="submit_btn" layoutX="192.0" layoutY="162.0" mnemonicParsing="false" onAction="#submitOnAction" prefHeight="31.0" prefWidth="83.0" text="Submit">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Label fx:id="display_lbl" layoutX="169.0" layoutY="210.0" prefHeight="44.0" prefWidth="135.0" />
+            <Label alignment="CENTER" layoutX="24.0" layoutY="14.0" prefHeight="38.0" prefWidth="277.0" text="REGISTER FORM">
+               <font>
+                  <Font name="System Italic" size="20.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" layoutX="24.0" layoutY="103.0" prefHeight="28.0" prefWidth="130.0" text="Job Positon:" />
+         </children>
+      </AnchorPane>
+   </left>
+   <right>
+      <AnchorPane prefHeight="273.0" prefWidth="299.0" BorderPane.alignment="CENTER">
+         <children>
+            <TableView fx:id="view_db" layoutX="5.0" prefHeight="218.0" prefWidth="278.0">
+              <columns>
+                <TableColumn fx:id="nameColumn" prefWidth="49.600035190582275" text="Name" />
+                <TableColumn fx:id="surnameColumn" prefWidth="58.40008544921875" text="Surname" />
+                  <TableColumn fx:id="ageColumn" prefWidth="39.20001983642578" text="Age" />
+                  <TableColumn fx:id="genderColumn" prefWidth="59.20001220703125" text="Gender" />
+                  <TableColumn fx:id="jobColumn" prefWidth="64.80010986328125" text="Job" />
+              </columns>
+            </TableView>
+            <Button fx:id="delete_button" layoutX="5.0" layoutY="224.0" mnemonicParsing="false" onAction="#delOnAction" prefHeight="34.0" prefWidth="84.0" text="Delete" />
+         </children>
+      </AnchorPane>
+   </right>
+</BorderPane>
