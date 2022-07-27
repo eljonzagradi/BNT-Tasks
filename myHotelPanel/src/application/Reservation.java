@@ -1,66 +1,76 @@
 package application;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.scene.control.DatePicker;
 
-public class Reservation extends Room {
+public class Reservation {
 	
 	private SimpleStringProperty  name,surname;
-	private LocalDate  checkin;
-	private LocalDate  checkout;
+	private ObjectProperty<LocalDate>  checkin;
+	private ObjectProperty<LocalDate> checkout;
+	private LongProperty price;
 
-	public Reservation(int number, String type,int pricePerNight,
-			           String name, String surname, 
-			           LocalDate checkin, LocalDate checkout) {
-		
-		    super(number, type, pricePerNight);
-	        this.name = new SimpleStringProperty(name);
-	        this.surname = new SimpleStringProperty(surname);
-	        this.checkin = checkin;
-	        this.checkout = checkout;
-    }
-	
 	public Reservation(String name, String surname, 
-			           LocalDate checkin, LocalDate checkout) {
-		    super();
+			           LocalDate checkin, LocalDate checkout,
+			           long price) {
+		
 	        this.name = new SimpleStringProperty(name);
 	        this.surname = new SimpleStringProperty(surname);
-	        this.checkin = checkin;
-	        this.checkout = checkout;
+	        this.checkin = new SimpleObjectProperty<LocalDate>(checkin);
+	        this.checkout = new SimpleObjectProperty<LocalDate>(checkout);
+	        this.price = new SimpleLongProperty(price);
     }
-	  
-	   public String getName() {
-	        return name.get();
+
+	   public StringProperty  getName() {
+	        return name;
 	    }
 	   
-	   public String geSurname() {
-	        return surname.get();
+	   public StringProperty getSurname() {
+	        return surname;
 	    }
 	   
-	   public LocalDate getCheckin() {
+	   public ObjectProperty<LocalDate> getCheckin() {
 	        return checkin;
 	    }
 	   
-	   public LocalDate getCheckout() {
+	   public ObjectProperty<LocalDate> getCheckout() {
 	        return checkout;
 	    }
 	   
-	   
-	    public void setName(String name) {
-	        this.name = new SimpleStringProperty(name);
-	    }
+	   public LongProperty getPrice() {
+		return price;
+		}
 
-	    public void setSurame(String surname) {
-	        this.surname = new SimpleStringProperty(surname);
-	    }
-   
-	    public void setCheckin(LocalDate checkin) {
-	        this.checkin = checkin;
-	    }
-	    
-	    public void setCheckout(LocalDate checkout) {
-	        this.checkout = checkout;
-
+		public static long calcPrice(DatePicker in, DatePicker out , int priceperNight) {
+	    	
+	    	long price = -1;
+	    	long daysNo = -1;
+	    		    	
+	    	if(in != null && out != null) {
+	    		
+	    		daysNo = Duration.between(
+	    				in.getValue().atStartOfDay(), 
+	    				out.getValue().atStartOfDay()).toDays();
+	    		
+	    				price = priceperNight * daysNo;
+	    				
+	    				return price;
+	    	} else {
+	    		
+	    		return price;
+	    		
+	    	}
 	    }
 }

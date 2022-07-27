@@ -1,0 +1,95 @@
+	
+	
+	
+	@FXML private TableView<Reservation> table;
+	
+	@FXML private TableColumn<Reservation,String> nameC;
+	@FXML private TableColumn<Reservation,String> surnameC;
+	@FXML private TableColumn<Reservation, LocalDate> checkinC;
+	@FXML private TableColumn<Reservation, LocalDate> checkoutC;
+	@FXML private TableColumn<Reservation, Double> priceC;
+	@FXML private TableColumn<Reservation, Integer> roomC;
+	
+	@FXML private ListView<Integer> roomList;
+	
+	package application;
+
+import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.ResourceBundle;
+
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+
+public class ResPopUpController implements Initializable {
+	
+	Reservation reservation = new Reservation();
+	
+	
+	@FXML private TextField name_txt;
+	@FXML private TextField surname_txt;
+	
+	@FXML private DatePicker check_in;
+	@FXML private DatePicker check_out;
+	
+	@FXML private TextField roomPicker;
+	@FXML private Label price_lbl;
+	
+	@FXML private Button submit_btn;
+		
+	public LocalDate getCheckIn() {
+		return check_in.getValue();
+	}
+	
+	public LocalDate getCheckout() {
+		return check_out.getValue();
+	}
+
+	private long price;
+	
+	public void calcPrice() {
+		
+		if(check_in != null && check_out != null) {
+		
+		long days = Duration.between(
+				getCheckIn().atStartOfDay(), 
+				getCheckout().atStartOfDay()).toDays();
+		
+				price = reservation.getPricePerNight() * days;
+				
+		}
+	}
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		
+		reservation.setPricePerNight(2000);
+		roomPicker.setText("ROOM 101");
+		roomPicker.setEditable(false);
+		
+		check_out.valueProperty().addListener(e -> {
+			
+			if(check_in != null) {
+				calcPrice();
+				price_lbl.textProperty()
+				.bind(new SimpleLongProperty(price)
+				.asString());
+			}
+			
+		});
+
+	}
+	
+}
+	

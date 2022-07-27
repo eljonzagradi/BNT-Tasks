@@ -7,41 +7,32 @@ import javafx.beans.property.SimpleStringProperty;
 public class Room {
 	
 	private SimpleIntegerProperty number;
-	private SimpleStringProperty type;
-	private SimpleIntegerProperty pricePerNight;
+	private int pricePerNight;
 	
 	public Room(int number, String type,int pricePerNight) {
         this.number = new SimpleIntegerProperty(number);
-        this.type = new SimpleStringProperty(type);
-        this.pricePerNight = new SimpleIntegerProperty(pricePerNight);
+        this.pricePerNight =  pricePerNight;
 	}
 
 	public Room() {
-		
+		this.number = new SimpleIntegerProperty();
+		this.pricePerNight = 0;
 	}
 
 	public int getNumber() {
 		return number.get();
 	}
 
-	public String getType() {
-		return type.get();
-	}
-
 	public int getPricePerNight() {
-		return pricePerNight.get();
+		return pricePerNight;
 	}
 
 	public void setNumber( int number) {
 		this.number = new SimpleIntegerProperty(number);
 	}
 
-	public void setType(String type) {
-		this.type = new SimpleStringProperty(type);;
-	}
-
 	public void setPricePerNight(int pricePerNight) {
-		this.pricePerNight = new SimpleIntegerProperty(pricePerNight);
+		this.pricePerNight = pricePerNight;
 	}
 	
 	
