@@ -4,7 +4,10 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,6 +27,10 @@ import javafx.scene.control.TableColumn;
 
 public class MainController implements Initializable {
 	
+	ObservableList<Reservation> room101;
+	ObservableList<Reservation> room102;
+
+	
 	@FXML private TableView<Reservation> reservationsTable;
 	
 	@FXML private TableColumn<Reservation,String> name_c;
@@ -32,7 +39,7 @@ public class MainController implements Initializable {
 	@FXML private TableColumn<Reservation,LocalDate> checkout_c;
 	@FXML private TableColumn<Reservation,Number> price_c;
 	
-	@FXML private ListView<Integer> roomList;
+	@FXML private ListView<Number> roomList;
 	
 	@FXML private TextField name_x;
 	@FXML private TextField lastName_x;
@@ -51,7 +58,26 @@ public class MainController implements Initializable {
 	
 	private long currentPrice;
 	
-	public void disableDateCells() 
+	public long getCurrentPrice() {
+		return currentPrice;
+	}
+
+	public void setCurrentPrice(long currentPrice) {
+		this.currentPrice = currentPrice;
+	}
+
+
+	private Number roomNum;
+	
+	public void setRoomNum(Number number) {
+		this.roomNum = number;
+	}
+	
+	public int getRoomNum() {
+		return roomNum.intValue();
+	}
+	
+	public void disablePastDateCells() 
 	{
 		
 		checkin_x.setDayCellFactory(picker -> new DateCell() {
@@ -73,22 +99,32 @@ public class MainController implements Initializable {
 
 	            setDisable(empty || date.compareTo(checkin) < 1 );
 	            } });
-        	
-        	
-        	
+
         });
 		
 	}
 	
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		disableDateCells();
-		tableSetup();
-		setPriceLabel();
-	}
+	public boolean areEmpty() {
+			
+		if (name_x.getText().isBlank()
+				|| lastName_x.getText().isBlank()
+				|| checkin_x == null
+				|| checkout_x == null
+				|| priceVal_x.getText().isBlank()
+				|| roomNo_lbl.getText().isBlank())
+			{ 
+				return true; 
+			} 
+			
+			else 	
+			{
+				return false; 
+			}	
+		}
 	
 	public void clickAdd() 
 	{
+		if(!areEmpty()) {
 		Reservation reservation = 
 				new Reservation(
 						name_x.getText(),
@@ -98,8 +134,10 @@ public class MainController implements Initializable {
 						Reservation.calcPrice(checkin_x, checkout_x, 2000)
 						);
 		reservationsTable.getItems().add(reservation);
+
+		}
 	}
-	
+
 	public void tableSetup() 
 	{
 		name_c.setCellValueFactory(name -> name.getValue().getName());
@@ -107,34 +145,87 @@ public class MainController implements Initializable {
 		checkin_c.setCellValueFactory(checkin -> checkin.getValue().getCheckin());
 		checkout_c.setCellValueFactory(checkout -> checkout.getValue().getCheckout());
 		price_c.setCellValueFactory(price -> price.getValue().getPrice());
-		reservationsTable.setItems(getReservationsList());
+		
+		room101 = FXCollections.observableArrayList(
+				new Reservation("room101", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000),
+				new Reservation("room101", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000),
+				new Reservation("room101", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000),
+				new Reservation("room101", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000),
+				new Reservation("room101", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000));
+		
+		room102 = FXCollections.observableArrayList(
+				new Reservation("room102", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000));
+		
 	}
 	
-	ObservableList<Reservation> getReservationsList() 
-	{
-		ObservableList<Reservation> reservations = FXCollections.observableArrayList();
-		reservations.add(new Reservation("name", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000));
-		return reservations;
+	public void listViewSetup() {
+		
+		ObservableList<Number> rooms = 
+				FXCollections
+				.observableArrayList( 101,102);
+		
+		roomList.setItems(rooms);
+
+		roomList.getSelectionModel().selectedItemProperty().addListener( e -> {
+			
+			setRoomNum(roomList.getSelectionModel().selectedItemProperty().getValue());
+			roomNo_lbl.textProperty()
+			.bind(new SimpleIntegerProperty(getRoomNum())
+			.asString());
+			
+			if(getRoomNum() == 101) {
+				
+				reservationsTable.setItems(room101);
+		
+			}
+			
+			else if(getRoomNum() == 102) {
+				
+				reservationsTable.setItems(room102);
+					
+			}			
+		});		
+		
 	}
-	
+
 	public void setPriceLabel() 
 	{
 		checkout_x.valueProperty().addListener( e -> {
 			
 			if(checkin_x != null) {
 				
-				currentPrice = Reservation.calcPrice(checkin_x, checkout_x, 2000);
+				setCurrentPrice(Reservation.calcPrice(checkin_x, checkout_x, 2000));
 				
 				priceVal_x.textProperty()
-				.bind(new SimpleLongProperty(currentPrice)
+				.bind(new SimpleLongProperty(getCurrentPrice())
 				.asString());
 				
 			}
+		
 		});		
 	}
 	
-	
-	
-	
+	public void clickClear()
+	{
+//		if(!areEmpty()) {
+//			name_x.clear();
+//			lastName_x.clear();
+//			checkin_x.setValue(null);
+//			checkout_x.setValue(null);
+//			setCurrentPrice(0);
+//			setRoomNum(0);
+//			roomList.getSelectionModel().select(-1);
+//			}
+	}
 
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		disablePastDateCells();
+		tableSetup();
+		listViewSetup();
+		setPriceLabel();
+		
+
+	}
 }
