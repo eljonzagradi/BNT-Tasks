@@ -1,6 +1,5 @@
 package application;
 
-
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Button;
@@ -25,14 +24,11 @@ public class Room extends Button {
 		setText("ROOM \n" 
 		        + "Number: " +number +"\n"
 				+ "Type: " + type);
-		
+		                                                
 		setOnAction(e -> {
-			
 			System.out.println("Selected Room No: " + number + "\n" +
-			"Cost " + pricePerNight + " $ per Night\n" );
-			
+			"Cost " + pricePerNight + " $ per Night\n" );		
 		});
-
 	}
 
 

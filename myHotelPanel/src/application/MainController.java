@@ -1,9 +1,13 @@
 package application;
 
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
+import database.DB;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.value.ChangeListener;
@@ -159,10 +163,19 @@ public class MainController implements Initializable {
 	}
 	
 	public void listViewSetup() {
+		ObservableList<Number> rooms = FXCollections.observableArrayList();
 		
-		ObservableList<Number> rooms = 
-				FXCollections
-				.observableArrayList( 101,102);
+		try {
+			Statement st = DB.con().createStatement();
+			ResultSet rs = st.executeQuery("SELECT * FROM hoteldatabase.room");
+            while (rs.next()) {
+            	rooms.add(rs.getInt("roomNo"));
+            }
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		roomList.setItems(rooms);
 
