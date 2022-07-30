@@ -66,16 +66,19 @@ public class PanelController implements Initializable {
 		return rPPN;
 	}
 
-	public void setrNo(int rNo) {
-		this.rNo = rNo;
+	public void setrNo() {
+		this.rNo = Integer.parseInt(
+				this.room_x.getText());
 	}
 
-	public void setrType(String rType) {
-		this.rType = rType;
+	public void setrType() {
+		this.rType = 
+				this.type_x.getValue();
 	}
 
-	public void setrPPN(int rPPN) {
-		this.rPPN = rPPN;
+	public void setrPPN() {
+		this.rPPN = Integer.parseInt(
+				this.ppn_x.getText());
 	}
 	
 	private static final int COLUMN_COUNT = 5;
@@ -84,13 +87,14 @@ public class PanelController implements Initializable {
 		
 	public void clickAdd() {
 	
+		//Note: Optimize this Method
 	if(!room_x.getText().isBlank() 
 			&& type_x.getValue() != "Room Types"
 			&& !ppn_x.getText().isBlank())
 		
-		setrNo(Integer.parseInt(room_x.getText()));
-		setrType(type_x.getValue());
-		setrPPN(Integer.parseInt(ppn_x.getText()));
+		setrNo();
+		setrType();
+		setrPPN();
 		
 		if(!dublicatesCheck(getrNo())) {
 		
@@ -105,7 +109,7 @@ public class PanelController implements Initializable {
 		int status = ps.executeUpdate();
 		
 		if(status != 0) {
-			setGridColumns(room);
+			updateGridPane(room);
 			
 		}
 		
@@ -113,17 +117,7 @@ public class PanelController implements Initializable {
 		e1.printStackTrace();
 	
 	}}}
-	
-	
-	public static void openCalendar(Button btn, int number, String type, int ppn) {
 		
-		System.out.println("You have chosen room number:" + number);
-		System.out.println("Type: " + type);
-		System.out.println("PPN: " + ppn);
-
-	
-	}
-	
 	public void choiceBoxSetup() {
 		
 		type_x.setValue("Room Types");
@@ -138,56 +132,46 @@ public class PanelController implements Initializable {
 	
 	}
 	
-	public void addCurrentRooms() throws SQLException {
+	public void addCurrentRooms() {
 		
 		try {
 			st = DB.con().createStatement();
 			rt = st.executeQuery("SELECT * FROM hoteldatabase.room;");
 		    while (rt.next()) { //iterate over every row returned
 		    	
-		    	int tmpRoomNo = rt.getInt("roomNo");
-		    	String tmpRoomType = rt.getString("type");
-		    	int tmpPrice = rt.getInt("pricePerNight");
+		    	int roomNo_db = rt.getInt("roomNo");
+		    	String roomType_db = rt.getString("type");
+		    	int ppn_db = rt.getInt("pricePerNight");
 		    	
-		    	x.add(tmpRoomNo);
-		    	
-				Room room = new Room(tmpRoomNo, tmpRoomType, tmpPrice);
-				
-				setGridColumns(room);		    
-				 
+		    	x.add(roomNo_db);
+				Room room = new Room(roomNo_db, roomType_db, ppn_db);
+				updateGridPane(room);
 		    }
 		    
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
-		    rt.close();
-		    st.close();		
-		    
+			
 		}
 		
 	}
+		
 	
-	public void setGridColumns(Room room) {
+	public void updateGridPane(Room room) {
 		
 		if (nextColumnIndex >= COLUMN_COUNT) {
             nextColumnIndex = 0;
-            currentRow++;
+            ++currentRow;
             grid.getRowConstraints().add(new RowConstraints(100));
         }
-	 grid.addRow(currentRow, room);
-        nextColumnIndex++;
 		
+		grid.addRow(currentRow, room);
+        nextColumnIndex++;	
 	}
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		DB.isDBconnected();
-		try {
-			addCurrentRooms();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		addCurrentRooms();
 		choiceBoxSetup();
 	}
 
