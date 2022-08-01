@@ -1,6 +1,8 @@
 package application;
 
 import java.net.URL;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,43 +10,38 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import database.DB;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DateCell;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
-
 import javafx.scene.control.DatePicker;
-
-import javafx.scene.layout.GridPane;
-
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 public class MainController implements Initializable {
-	
-	ObservableList<Reservation> room101;
-	ObservableList<Reservation> room102;
-
-	
+		
 	@FXML private TableView<Reservation> reservationsTable;
+	
+	ObservableList<Reservation> reservations = FXCollections.observableArrayList();
+	ObservableList<DisabledRange> rangesToDisable = FXCollections.observableArrayList();
+
 	
 	@FXML private TableColumn<Reservation,String> name_c;
 	@FXML private TableColumn<Reservation,String> lastname_c;
-	@FXML private TableColumn<Reservation,LocalDate> checkin_c;
-	@FXML private TableColumn<Reservation,LocalDate> checkout_c;
+	@FXML private TableColumn<Reservation,Date> checkin_c;
+	@FXML private TableColumn<Reservation,Date> checkout_c;
 	@FXML private TableColumn<Reservation,Number> price_c;
-	
-	@FXML private ListView<Number> roomList;
-	
+		
 	@FXML private TextField name_x;
 	@FXML private TextField lastName_x;
 	
@@ -59,8 +56,23 @@ public class MainController implements Initializable {
 	
 	@FXML private Button add_b;
 	@FXML private Button clear_b;
+	@FXML private Button back_b;
 	
 	private long currentPrice;
+	public static int currentPPN;
+	public static int selectedRoom;
+	
+	Statement st;
+	ResultSet rt;
+
+	
+	public int getCurrentPPN() {
+		return currentPPN;	
+	}
+	
+	public int getSelectedRoom() {
+		return selectedRoom;	
+	}
 	
 	public long getCurrentPrice() {
 		return currentPrice;
@@ -70,27 +82,25 @@ public class MainController implements Initializable {
 		this.currentPrice = currentPrice;
 	}
 
-
-	private Number roomNum;
-	
-	public void setRoomNum(Number number) {
-		this.roomNum = number;
-	}
-	
-	public int getRoomNum() {
-		return roomNum.intValue();
-	}
-	
 	public void disablePastDateCells() 
 	{
 		
+    
+		
 		checkin_x.setDayCellFactory(picker -> new DateCell() {
-        
+	     
 			public void updateItem(LocalDate date, boolean empty) {
             super.updateItem(date, empty);
+            
+            boolean disable = rangesToDisable.stream()
+    	            .filter(r->r.getCheck_in().minusDays(1).isBefore(date))
+    	            .filter(r->r.getCheck_out().plusDays(0).isAfter(date))
+    	            .findAny()
+    	            .isPresent();
+
             LocalDate today = LocalDate.now();
 
-            setDisable(empty || date.compareTo(today) < 0 );
+            setDisable(empty || date.compareTo(today) < 0 || disable);
             } });
 		
 		checkin_x.valueProperty().addListener( e -> {
@@ -99,9 +109,16 @@ public class MainController implements Initializable {
 		        
 				public void updateItem(LocalDate date, boolean empty) {
 	            super.updateItem(date, empty);
-	            LocalDate checkin = checkin_x.getValue();
+	            
+	            LocalDate lastDate = checkin_x.getValue();
+	            
+	            boolean disable = rangesToDisable.stream()
+	    	            .filter(r->r.getCheck_in().isBefore(date))
+	    	            .filter(r->r.getCheck_out().isAfter(date))
+	    	            .findAny()
+	    	            .isPresent();
 
-	            setDisable(empty || date.compareTo(checkin) < 1 );
+	            setDisable(empty || disable || date.compareTo(lastDate) <= 0);
 	            } });
 
         });
@@ -125,21 +142,51 @@ public class MainController implements Initializable {
 				return false; 
 			}	
 		}
-	
+		
 	public void clickAdd() 
 	{
 		if(!areEmpty()) {
-		Reservation reservation = 
+		
+			Reservation reservation = 
 				new Reservation(
+						getSelectedRoom(),
 						name_x.getText(),
 						lastName_x.getText(),
-						checkin_x.getValue(),
-						checkout_x.getValue(),
-						Reservation.calcPrice(checkin_x, checkout_x, 2000)
+						java.sql.Date.valueOf(checkin_x.getValue()),
+						java.sql.Date.valueOf(checkout_x.getValue()),
+						Reservation.calcPrice(checkin_x, checkout_x, getCurrentPPN())
 						);
-		reservationsTable.getItems().add(reservation);
+			
+			try {
+				PreparedStatement ps =
+						DB.con().prepareStatement
+		      ("INSERT INTO `hoteldatabase`.`reservations` "
+		      		+ "(`number`, `name`, `lastname`, `checkin`, `checkout`, `price`) "
+		      		+ "VALUES ('"
+		      		+getSelectedRoom()+
+		      		"', '"
+		      		+name_x.getText()+
+		      		"', '"
+		      		+lastName_x.getText()+
+		      		"', '"
+		      		+java.sql.Date.valueOf(checkin_x.getValue())+
+		      		"', '"
+		      		+java.sql.Date.valueOf(checkout_x.getValue())+
+		      		"', '"
+		      		+Reservation.calcPrice(checkin_x, checkout_x, getCurrentPPN())+
+		      		"');");		
+				
+				ps.executeUpdate();
 
+			}catch (SQLException e1) {
+				e1.printStackTrace();
+				
+			}
+			reservations.add(reservation);
+			
+			
 		}
+		
 	}
 
 	public void tableSetup() 
@@ -150,95 +197,98 @@ public class MainController implements Initializable {
 		checkout_c.setCellValueFactory(checkout -> checkout.getValue().getCheckout());
 		price_c.setCellValueFactory(price -> price.getValue().getPrice());
 		
-		room101 = FXCollections.observableArrayList(
-				new Reservation("room101", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000),
-				new Reservation("room101", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000),
-				new Reservation("room101", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000),
-				new Reservation("room101", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000),
-				new Reservation("room101", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000));
-		
-		room102 = FXCollections.observableArrayList(
-				new Reservation("room102", "lastname",LocalDate.of(2022,7,27),LocalDate.of(2022,07,31), 10000));
-		
-	}
-	
-	public void listViewSetup() {
-		ObservableList<Number> rooms = FXCollections.observableArrayList();
+
 		
 		try {
-			Statement st = DB.con().createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM hoteldatabase.room");
-            while (rs.next()) {
-            	rooms.add(rs.getInt("roomNo"));
-            }
-			
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		roomList.setItems(rooms);
+			st = DB.con().createStatement();
+			rt = st.executeQuery("SELECT * \r\n"
+					+ "FROM hoteldatabase.reservations\r\n"
+					+ "WHERE number = '"+getSelectedRoom()+"'");
+		    while (rt.next()) {
+		    	
+		    	String nameDB = rt.getString("name");
+		    	String lastnameDB  = rt.getString("lastname");
+		    	Date checkinDB  = rt.getDate("checkin");
+		    	Date checkoutDB  = rt.getDate("checkout");
+		    	int priceDB  = rt.getInt("price");
+		    	
+		    	rangesToDisable.add(new DisabledRange(checkinDB, checkoutDB));
+	    	    		
+		    	reservations.add(new Reservation(getSelectedRoom(), nameDB, lastnameDB, 
+		    			checkinDB, checkoutDB, priceDB));
+		    	
+				reservationsTable.setItems(reservations);
 
-		roomList.getSelectionModel().selectedItemProperty().addListener( e -> {
+
+		    }
+		    
+		} catch (SQLException e) {
+			e.printStackTrace();
 			
-			setRoomNum(roomList.getSelectionModel().selectedItemProperty().getValue());
-			roomNo_lbl.textProperty()
-			.bind(new SimpleIntegerProperty(getRoomNum())
-			.asString());
-			
-			if(getRoomNum() == 101) {
-				
-				reservationsTable.setItems(room101);
-		
-			}
-			
-			else if(getRoomNum() == 102) {
-				
-				reservationsTable.setItems(room102);
-					
-			}			
-		});		
+		}		
 		
 	}
-
-	public void setPriceLabel() 
+		
+	public void displayPrice_Room() 
 	{
 		checkout_x.valueProperty().addListener( e -> {
 			
 			if(checkin_x != null) {
 				
-				setCurrentPrice(Reservation.calcPrice(checkin_x, checkout_x, 2000));
+				setCurrentPrice(Reservation.calcPrice(checkin_x, checkout_x, getCurrentPPN()));
 				
 				priceVal_x.textProperty()
 				.bind(new SimpleLongProperty(getCurrentPrice())
-				.asString());
-				
-			}
-		
+				.asString());			
+			}	
 		});		
+	
+		roomNo_lbl.setText("ROOM: "+
+				Integer.toString(getSelectedRoom()));
+	}
+		
+	public void refresh()
+	{
+//		Stage primaryStage = (Stage) back_b.getScene().getWindow();
+//		primaryStage.close();
+//		
+//		
+//		try {
+//			Parent root = FXMLLoader.load(getClass().getResource("/application/Main.fxml"));
+//			Scene scene = new Scene(root);
+//			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+//			primaryStage.setScene(scene);
+//			primaryStage.show();
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//		}
+		reservations.clear();
+		tableSetup();
+		
 	}
 	
-	public void clickClear()
-	{
-//		if(!areEmpty()) {
-//			name_x.clear();
-//			lastName_x.clear();
-//			checkin_x.setValue(null);
-//			checkout_x.setValue(null);
-//			setCurrentPrice(0);
-//			setRoomNum(0);
-//			roomList.getSelectionModel().select(-1);
-//			}
+	public void goBack() {
+		Stage stage = (Stage) back_b.getScene().getWindow();
+	    stage.close();
+		
+		Stage primaryStage = new Stage();
+		
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("/application/Panel.fxml"));
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
-
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		disablePastDateCells();
 		tableSetup();
-		listViewSetup();
-		setPriceLabel();
-		
-
+		displayPrice_Room();
 	}
 }

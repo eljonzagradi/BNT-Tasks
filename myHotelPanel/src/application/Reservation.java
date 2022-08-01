@@ -1,5 +1,6 @@
 package application;
 
+import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
 
@@ -18,22 +19,24 @@ import javafx.scene.control.DatePicker;
 public class Reservation {
 	
 	private SimpleStringProperty  name,surname;
-	private ObjectProperty<LocalDate>  checkin;
-	private ObjectProperty<LocalDate> checkout;
+	private ObjectProperty<Date>  checkin;
+	private ObjectProperty<Date> checkout;
 	private LongProperty price;
 
-	public Reservation(String name, String surname, 
-			           LocalDate checkin, LocalDate checkout,
+	public Reservation(int roomNo,String name, String surname, 
+			           Date checkin, Date checkout,
 			           long price) {
 		
 	        this.name = new SimpleStringProperty(name);
 	        this.surname = new SimpleStringProperty(surname);
-	        this.checkin = new SimpleObjectProperty<LocalDate>(checkin);
-	        this.checkout = new SimpleObjectProperty<LocalDate>(checkout);
+	        this.checkin = new SimpleObjectProperty<Date>(checkin);
+	        this.checkout = new SimpleObjectProperty<Date>(checkout);
 	        this.price = new SimpleLongProperty(price);
     }
 
-	   public StringProperty  getName() {
+	
+
+	public StringProperty  getName() {
 	        return name;
 	    }
 	   
@@ -41,11 +44,11 @@ public class Reservation {
 	        return surname;
 	    }
 	   
-	   public ObjectProperty<LocalDate> getCheckin() {
+	   public ObjectProperty<Date> getCheckin() {
 	        return checkin;
 	    }
 	   
-	   public ObjectProperty<LocalDate> getCheckout() {
+	   public ObjectProperty<Date> getCheckout() {
 	        return checkout;
 	    }
 	   
@@ -53,7 +56,7 @@ public class Reservation {
 		return price;
 		}
 
-		public static long calcPrice(DatePicker in, DatePicker out , int priceperNight) {
+		public static long calcPrice(DatePicker in, DatePicker out,int pricePerNight) {
 	    	
 	    	long price = -1;
 	    	long daysNo = -1;
@@ -64,7 +67,7 @@ public class Reservation {
 	    				in.getValue().atStartOfDay(), 
 	    				out.getValue().atStartOfDay()).toDays();
 	    		
-	    				price = priceperNight * daysNo;
+	    				price = pricePerNight * daysNo;
 	    				
 	    				return price;
 	    	} else {

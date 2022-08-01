@@ -170,7 +170,7 @@ public class PanelController implements Initializable {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		DB.isDBconnected();
+//		DB.isDBconnected();
 		addCurrentRooms();
 		choiceBoxSetup();
 	}
