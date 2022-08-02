@@ -3,10 +3,14 @@ package application;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 public class DisabledRange {
 	
 	private final LocalDate check_in;
 	private final LocalDate check_out;
+
 	
 	public DisabledRange(Date in, Date out) {	
 		this.check_in = in.toLocalDate();
@@ -21,7 +25,9 @@ public class DisabledRange {
 		return check_out;
 	}
 	
+}
+	
 	
 	
 
-}
+

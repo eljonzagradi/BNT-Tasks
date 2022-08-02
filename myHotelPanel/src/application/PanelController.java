@@ -1,32 +1,44 @@
 package application;
 
 import java.net.URL;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import database.DB;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Color;
 
 public class PanelController implements Initializable {
+	
+	ObservableList<DisabledRange> busyDates = FXCollections.observableArrayList();
+
 	
 	@FXML private TextField room_x;
 	@FXML private TextField ppn_x;
 	@FXML private ChoiceBox<String> type_x;
 	@FXML private Button add_b;
 	@FXML private GridPane grid;
+	@FXML private Label today_lb;
 	
 	//newRoom variables
 	private int rNo;
@@ -103,7 +115,7 @@ public class PanelController implements Initializable {
 		try {
 		PreparedStatement ps =
 				DB.con().prepareStatement
-      ("INSERT INTO `hoteldatabase`.`room` (`roomNo`, `type`, `pricePerNight`) "
+      ("INSERT INTO `hoteldatabase`.`rooms` (`number`, `class`, `price`) "
       		+ "VALUES ('"+getrNo()+"', '"+getrType()+"', '"+getrPPN()+"');");
 		
 		int status = ps.executeUpdate();
@@ -133,19 +145,35 @@ public class PanelController implements Initializable {
 	}
 	
 	public void addCurrentRooms() {
+		Statement st2;
+		ResultSet rt2;
 		
 		try {
 			st = DB.con().createStatement();
-			rt = st.executeQuery("SELECT * FROM hoteldatabase.room;");
-		    while (rt.next()) { //iterate over every row returned
+			rt = st.executeQuery("select *\r\n"
+					+ "from hoteldatabase.rooms ro\r\n"
+					);
+			st2 = DB.con().createStatement();
+			rt2 = st2.executeQuery("select number,check_in,check_out\r\n"
+					              + "from hoteldatabase.reservations");
+			
+		    while (rt.next()) {
 		    	
-		    	int roomNo_db = rt.getInt("roomNo");
-		    	String roomType_db = rt.getString("type");
-		    	int ppn_db = rt.getInt("pricePerNight");
+		    	int roomNo_db = rt.getInt("number");
+		    	String roomType_db = rt.getString("class");
+		    	int ppn_db = rt.getInt("price");
+		    	
+		    			    	
 		    	
 		    	x.add(roomNo_db);
-				Room room = new Room(roomNo_db, roomType_db, ppn_db);
+		    	
+		    	Room room = new Room(roomNo_db, roomType_db, ppn_db);
+//		    	if(rt2.next() && roomNo_db == rt2.getInt("number")){
+//				if(unavailableRooms(rt2.getDate("check_in"),rt2.getDate("check_out"))) {
+//					 room.setStyle("-fx-background-color: #ff0000; "); 
+//				}}
 				updateGridPane(room);
+				
 		    }
 		    
 		} catch (SQLException e) {
@@ -154,8 +182,22 @@ public class PanelController implements Initializable {
 		}
 		
 	}
-		
 	
+	//not working
+	public boolean unavailableRooms(Date in ,Date out) {
+		
+		Date date = Date.valueOf(LocalDate.now());
+		if(in.getTime() <= date.getTime()
+				|| out.getTime() > date.getTime()) {
+		 return true; 
+		}
+		
+		else {
+			return false;		
+		}
+	}
+		
+	//can be better
 	public void updateGridPane(Room room) {
 		
 		if (nextColumnIndex >= COLUMN_COUNT) {
@@ -168,11 +210,12 @@ public class PanelController implements Initializable {
         nextColumnIndex++;	
 	}
 	
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-//		DB.isDBconnected();
 		addCurrentRooms();
 		choiceBoxSetup();
+		today_lb.setText(LocalDate.now().toString());
 	}
 
 }

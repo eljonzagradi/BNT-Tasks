@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -8,9 +9,9 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="527.0" prefWidth="786.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.PanelController">
    <children>
-      <TextField fx:id="room_x" layoutX="14.0" layoutY="50.0" prefHeight="35.0" prefWidth="168.0" promptText="Room Number" />
-      <ChoiceBox fx:id="type_x" layoutX="14.0" layoutY="133.0" prefHeight="35.0" prefWidth="168.0" />
-      <Button fx:id="add_b" layoutX="72.0" layoutY="182.0" mnemonicParsing="false" onAction="#clickAdd" text="Add" />
+      <TextField fx:id="room_x" layoutX="34.0" layoutY="132.0" prefHeight="35.0" prefWidth="168.0" promptText="Room Number" />
+      <ChoiceBox fx:id="type_x" layoutX="34.0" layoutY="215.0" prefHeight="35.0" prefWidth="168.0" />
+      <Button fx:id="add_b" layoutX="99.0" layoutY="264.0" mnemonicParsing="false" onAction="#clickAdd" text="Add" />
       <ScrollPane fitToWidth="true" layoutX="224.0" layoutY="4.0" prefHeight="500.0" prefWidth="520.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="224.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="10.0">
          <content>
             <GridPane fx:id="grid" alignment="TOP_CENTER" hgap="10.0" prefHeight="100.0" prefWidth="520.0" vgap="10.0">
@@ -30,6 +31,16 @@
             </GridPane>
          </content>
       </ScrollPane>
-      <TextField fx:id="ppn_x" layoutX="14.0" layoutY="91.0" prefHeight="35.0" prefWidth="168.0" promptText="price per night" />
+      <TextField fx:id="ppn_x" layoutX="34.0" layoutY="173.0" prefHeight="35.0" prefWidth="168.0" promptText="price per night" />
+      <Label alignment="CENTER" layoutX="14.0" layoutY="23.0" prefHeight="25.0" prefWidth="65.0" text="Today:">
+         <font>
+            <Font name="System Bold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="today_lb" alignment="CENTER" layoutX="85.0" layoutY="19.0" prefHeight="35.0" prefWidth="126.0">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 import database.DB;
@@ -35,7 +36,6 @@ public class MainController implements Initializable {
 	ObservableList<Reservation> reservations = FXCollections.observableArrayList();
 	ObservableList<DisabledRange> rangesToDisable = FXCollections.observableArrayList();
 
-	
 	@FXML private TableColumn<Reservation,String> name_c;
 	@FXML private TableColumn<Reservation,String> lastname_c;
 	@FXML private TableColumn<Reservation,Date> checkin_c;
@@ -84,9 +84,6 @@ public class MainController implements Initializable {
 
 	public void disablePastDateCells() 
 	{
-		
-    
-		
 		checkin_x.setDayCellFactory(picker -> new DateCell() {
 	     
 			public void updateItem(LocalDate date, boolean empty) {
@@ -102,6 +99,7 @@ public class MainController implements Initializable {
 
             setDisable(empty || date.compareTo(today) < 0 || disable);
             } });
+		
 		
 		checkin_x.valueProperty().addListener( e -> {
 			
@@ -159,23 +157,28 @@ public class MainController implements Initializable {
 			
 			try {
 				PreparedStatement ps =
-						DB.con().prepareStatement
-		      ("INSERT INTO `hoteldatabase`.`reservations` "
-		      		+ "(`number`, `name`, `lastname`, `checkin`, `checkout`, `price`) "
-		      		+ "VALUES ('"
-		      		+getSelectedRoom()+
-		      		"', '"
-		      		+name_x.getText()+
-		      		"', '"
-		      		+lastName_x.getText()+
-		      		"', '"
-		      		+java.sql.Date.valueOf(checkin_x.getValue())+
-		      		"', '"
-		      		+java.sql.Date.valueOf(checkout_x.getValue())+
-		      		"', '"
-		      		+Reservation.calcPrice(checkin_x, checkout_x, getCurrentPPN())+
-		      		"');");		
-				
+						DB.con().prepareStatement(""
+								+ "INSERT INTO `hoteldatabase`.`reservations` "
+								+ "(`name`, `surname`, `check_in`, `check_out`, `total_price`, `created_at`, `paid`, `number`) "
+								+ "VALUES ('"
+								+ name_x.getText()
+								+ "', '"
+								+ lastName_x.getText()
+								+ "', '"
+								+ java.sql.Date.valueOf(checkin_x.getValue()) 
+								+ "', '"
+								+ java.sql.Date.valueOf(checkout_x.getValue())
+								+ "', '"
+								+ Reservation.calcPrice(checkin_x, checkout_x, getCurrentPPN())
+								+ "', '"
+								+ LocalDateTime.now()
+								+ "', '"
+								+ "1"
+								+ "', '"
+								+ getSelectedRoom()
+								+ "');\r\n"
+								);
+
 				ps.executeUpdate();
 
 			}catch (SQLException e1) {
@@ -183,8 +186,6 @@ public class MainController implements Initializable {
 				
 			}
 			reservations.add(reservation);
-			
-			
 		}
 		
 	}
@@ -197,35 +198,43 @@ public class MainController implements Initializable {
 		checkout_c.setCellValueFactory(checkout -> checkout.getValue().getCheckout());
 		price_c.setCellValueFactory(price -> price.getValue().getPrice());
 		
-
+		loadDataFromDB();
+	}
+	
+	public void loadDataFromDB() {
 		
 		try {
 			st = DB.con().createStatement();
-			rt = st.executeQuery("SELECT * \r\n"
-					+ "FROM hoteldatabase.reservations\r\n"
-					+ "WHERE number = '"+getSelectedRoom()+"'");
-		    while (rt.next()) {
+			
+			rt = st.executeQuery("select name,surname,check_in,check_out,total_price\r\n"
+					           + "from hoteldatabase.reservations r\r\n"
+					           + "where number = '"+getSelectedRoom()+"'\r\n"
+					           + "order by created_at");
+		   
+			while (rt.next()) {
 		    	
 		    	String nameDB = rt.getString("name");
-		    	String lastnameDB  = rt.getString("lastname");
-		    	Date checkinDB  = rt.getDate("checkin");
-		    	Date checkoutDB  = rt.getDate("checkout");
-		    	int priceDB  = rt.getInt("price");
+		    	String lastnameDB  = rt.getString("surname");
+		    	Date checkinDB  = rt.getDate("check_in");
+		    	Date checkoutDB  = rt.getDate("check_out");
+		    	int priceDB  = rt.getInt("total_price");
 		    	
-		    	rangesToDisable.add(new DisabledRange(checkinDB, checkoutDB));
+		    	rangesToDisable.add(
+		    			new DisabledRange(checkinDB, checkoutDB));
 	    	    		
-		    	reservations.add(new Reservation(getSelectedRoom(), nameDB, lastnameDB, 
-		    			checkinDB, checkoutDB, priceDB));
+		    	reservations.add(
+		    			new Reservation(
+		    					getSelectedRoom(), nameDB, lastnameDB,
+		    					checkinDB, checkoutDB, priceDB));
 		    	
 				reservationsTable.setItems(reservations);
-
 
 		    }
 		    
 		} catch (SQLException e) {
 			e.printStackTrace();
 			
-		}		
+		}
 		
 	}
 		
@@ -249,21 +258,8 @@ public class MainController implements Initializable {
 		
 	public void refresh()
 	{
-//		Stage primaryStage = (Stage) back_b.getScene().getWindow();
-//		primaryStage.close();
-//		
-//		
-//		try {
-//			Parent root = FXMLLoader.load(getClass().getResource("/application/Main.fxml"));
-//			Scene scene = new Scene(root);
-//			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-//			primaryStage.setScene(scene);
-//			primaryStage.show();
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//		}
 		reservations.clear();
-		tableSetup();
+		loadDataFromDB();
 		
 	}
 	
