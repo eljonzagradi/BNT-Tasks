@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ResourceBundle;
 
 import database.DB;
@@ -27,6 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class MainController implements Initializable {
@@ -36,6 +38,7 @@ public class MainController implements Initializable {
 	ObservableList<Reservation> reservations = FXCollections.observableArrayList();
 	ObservableList<DisabledRange> rangesToDisable = FXCollections.observableArrayList();
 
+	
 	@FXML private TableColumn<Reservation,String> name_c;
 	@FXML private TableColumn<Reservation,String> lastname_c;
 	@FXML private TableColumn<Reservation,Date> checkin_c;
@@ -58,6 +61,7 @@ public class MainController implements Initializable {
 	@FXML private Button clear_b;
 	@FXML private Button back_b;
 	
+	@FXML private Pane calendarPane;
 	private long currentPrice;
 	public static int currentPPN;
 	public static int selectedRoom;
@@ -110,7 +114,7 @@ public class MainController implements Initializable {
 	            
 	            LocalDate lastDate = checkin_x.getValue();
 	            
-	            boolean disable = rangesToDisable.stream()
+	            boolean disable =rangesToDisable.stream()
 	    	            .filter(r->r.getCheck_in().isBefore(date))
 	    	            .filter(r->r.getCheck_out().isAfter(date))
 	    	            .findAny()
@@ -122,6 +126,8 @@ public class MainController implements Initializable {
         });
 		
 	}
+	
+	
 	
 	public boolean areEmpty() {
 			
@@ -187,6 +193,17 @@ public class MainController implements Initializable {
 			}
 			reservations.add(reservation);
 		}
+		
+//		reservations.clear();
+//		loadDataFromDB();
+//		name_x.clear();
+//		lastName_x.clear();
+//		checkin_x.setValue(null);
+//		checkout_x.setValue(null);
+//		priceVal_x.setText(null);
+//		setCurrentPrice(0);
+		
+
 		
 	}
 
@@ -258,8 +275,7 @@ public class MainController implements Initializable {
 		
 	public void refresh()
 	{
-		reservations.clear();
-		loadDataFromDB();
+		
 		
 	}
 	
@@ -286,5 +302,6 @@ public class MainController implements Initializable {
 		disablePastDateCells();
 		tableSetup();
 		displayPrice_Room();
+		calendarPane.getChildren().add(new FullCalendarView(YearMonth.now()).getView());
 	}
 }

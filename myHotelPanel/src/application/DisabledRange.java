@@ -11,7 +11,6 @@ public class DisabledRange {
 	private final LocalDate check_in;
 	private final LocalDate check_out;
 
-	
 	public DisabledRange(Date in, Date out) {	
 		this.check_in = in.toLocalDate();
 		this.check_out = out.toLocalDate();

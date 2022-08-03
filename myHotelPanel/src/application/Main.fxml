@@ -6,44 +6,35 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="649.0" prefWidth="666.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="805.0" prefWidth="844.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
    <children>
-      <TableView fx:id="reservationsTable" layoutX="11.0" layoutY="406.0" prefHeight="229.0" prefWidth="641.0">
+      <TableView fx:id="reservationsTable" layoutX="28.0" layoutY="562.0" prefHeight="229.0" prefWidth="808.0">
         <columns>
-          <TableColumn fx:id="name_c" prefWidth="84.0" text="Name" />
-          <TableColumn fx:id="lastname_c" prefWidth="127.0" text="Last Name" />
-            <TableColumn fx:id="checkin_c" prefWidth="176.0" text="Check in" />
-            <TableColumn fx:id="checkout_c" prefWidth="162.0" text="Check out" />
-            <TableColumn fx:id="price_c" prefWidth="87.0" text="Price" />
+          <TableColumn fx:id="name_c" prefWidth="145.0" text="Name" />
+          <TableColumn fx:id="lastname_c" prefWidth="140.0" text="Last Name" />
+            <TableColumn fx:id="checkin_c" prefWidth="215.0" text="Check in" />
+            <TableColumn fx:id="checkout_c" prefWidth="196.0" text="Check out" />
+            <TableColumn fx:id="price_c" prefWidth="109.0" text="Price" />
         </columns>
       </TableView>
-      <TextField fx:id="name_x" layoutX="45.0" layoutY="139.0" prefHeight="36.0" prefWidth="149.0" promptText="Name" />
-      <TextField fx:id="lastName_x" layoutX="45.0" layoutY="192.0" prefHeight="36.0" prefWidth="149.0" promptText="Last Name" />
-      <Label fx:id="priceVal_x" alignment="CENTER" layoutX="273.0" layoutY="299.0" prefHeight="52.0" prefWidth="110.0">
+      <TextField fx:id="name_x" layoutX="657.0" layoutY="147.0" prefHeight="36.0" prefWidth="149.0" promptText="Name" />
+      <TextField fx:id="lastName_x" layoutX="658.0" layoutY="193.0" prefHeight="36.0" prefWidth="149.0" promptText="Last Name" />
+      <Label fx:id="priceVal_x" alignment="CENTER" layoutX="655.0" layoutY="351.0" prefHeight="52.0" prefWidth="149.0">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-      <Label fx:id="roomNo_lbl" alignment="CENTER" layoutX="148.0" layoutY="24.0" prefHeight="36.0" prefWidth="370.0" text="Selected ROOM">
+      <Label fx:id="roomNo_lbl" alignment="CENTER" layoutX="237.0" layoutY="14.0" prefHeight="36.0" prefWidth="370.0" text="Selected ROOM">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-      <DatePicker fx:id="checkout_x" layoutX="432.0" layoutY="139.0" prefHeight="36.0" prefWidth="149.0" promptText="Check-out" />
-      <DatePicker fx:id="checkin_x" layoutX="229.0" layoutY="139.0" prefHeight="36.0" prefWidth="149.0" promptText="Check-in" />
-      <Label layoutX="393.0" layoutY="307.0" prefHeight="36.0" prefWidth="29.0" text="LEK">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="229.0" layoutY="307.0" prefHeight="36.0" prefWidth="46.0" text="Price:">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </Label>
-      <Button fx:id="add_b" layoutX="26.0" layoutY="363.0" mnemonicParsing="false" onAction="#clickAdd" text="Add" />
-      <Button layoutX="596.0" layoutY="12.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
-      <Button layoutX="75.0" layoutY="363.0" mnemonicParsing="false" text="Del" />
-      <Button fx:id="back_b" layoutX="286.0" layoutY="60.0" mnemonicParsing="false" onAction="#goBack" text="Change Room" />
+      <DatePicker fx:id="checkout_x" layoutX="658.0" layoutY="293.0" prefHeight="36.0" prefWidth="149.0" promptText="Check-out" />
+      <DatePicker fx:id="checkin_x" layoutX="657.0" layoutY="243.0" prefHeight="36.0" prefWidth="149.0" promptText="Check-in" />
+      <Button fx:id="add_b" layoutX="658.0" layoutY="428.0" mnemonicParsing="false" onAction="#clickAdd" text="Add" />
+      <Button layoutX="757.0" layoutY="428.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+      <Button layoutX="705.0" layoutY="428.0" mnemonicParsing="false" text="Del" />
+      <Button fx:id="back_b" layoutX="375.0" layoutY="50.0" mnemonicParsing="false" onAction="#goBack" text="Change Room" />
+      <Pane fx:id="calendarPane" layoutX="28.0" layoutY="87.0" prefHeight="400.0" prefWidth="600.0" />
    </children>
 </AnchorPane>
