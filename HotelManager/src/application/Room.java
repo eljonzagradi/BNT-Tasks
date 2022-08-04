@@ -1,0 +1,73 @@
+package application;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
+
+public class Room  extends Label {
+	
+	private SimpleIntegerProperty number;
+	private SimpleStringProperty type;
+	private SimpleIntegerProperty price;
+	
+	public Room(int number, String type,int price) {
+		
+        this.number = new SimpleIntegerProperty(number);
+        this.type = new SimpleStringProperty(type);
+        this.price = new  SimpleIntegerProperty(price);
+        
+        this.setAlignment(Pos.CENTER);
+        this.setMaxHeight(200);
+        this.setMaxWidth(200);
+		this.setBackground(new Background(new BackgroundFill(Color.AQUA, new CornerRadii(0), new Insets(0))));
+	    this.setStyle("-fx-border-color: white;");
+		this.setText(  "ROOM:"     + number +"\n"
+				    + "Type: "    + type   +"\n"
+				+ "1 Night: " + price  + "$");
+		                                                
+		this.setOnMouseClicked(e -> {
+			
+			CalendarController.selectedRoom = number;
+			CalendarController.priceNight = price;
+			
+			Stage stage =  (Stage) getScene().getWindow();
+			stage.close();
+		
+		Stage primaryStage = new Stage();
+		
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("/application/Calendar.fxml"));
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setScene(scene);
+			primaryStage.show();
+			
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		});	
+	}
+	
+	public int getNumber() {
+		return number.get();
+	}
+	public int getPricePerNight() {
+		return price.get();
+	}
+	public String getType() {
+		return type.get();
+	}
+}

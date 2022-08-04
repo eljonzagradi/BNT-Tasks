@@ -33,10 +33,11 @@ import javafx.stage.Stage;
 
 public class MainController implements Initializable {
 		
-	@FXML private TableView<Reservation> reservationsTable;
 	
 	ObservableList<Reservation> reservations = FXCollections.observableArrayList();
 	ObservableList<DisabledRange> rangesToDisable = FXCollections.observableArrayList();
+	
+	@FXML private TableView<Reservation> reservationsTable;
 
 	
 	@FXML private TableColumn<Reservation,String> name_c;
@@ -126,8 +127,6 @@ public class MainController implements Initializable {
         });
 		
 	}
-	
-	
 	
 	public boolean areEmpty() {
 			
@@ -273,12 +272,7 @@ public class MainController implements Initializable {
 				Integer.toString(getSelectedRoom()));
 	}
 		
-	public void refresh()
-	{
-		
-		
-	}
-	
+
 	public void goBack() {
 		Stage stage = (Stage) back_b.getScene().getWindow();
 	    stage.close();

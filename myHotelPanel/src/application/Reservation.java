@@ -23,9 +23,14 @@ public class Reservation {
 	private ObjectProperty<Date> checkout;
 	private LongProperty price;
 
-	public Reservation(int roomNo,String name, String surname, 
-			           Date checkin, Date checkout,
-			           long price) {
+	public Reservation     (
+			int roomNo,
+			String name,
+			String surname,
+			Date checkin,
+			Date checkout,
+			long price     ) 
+	{
 		
 	        this.name = new SimpleStringProperty(name);
 	        this.surname = new SimpleStringProperty(surname);

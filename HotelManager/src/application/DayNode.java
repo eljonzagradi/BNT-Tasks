@@ -2,7 +2,6 @@ package application;
 
 import java.time.LocalDate;
 
-import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 
 public class DayNode  extends ToggleButton{
@@ -11,8 +10,8 @@ public class DayNode  extends ToggleButton{
     
     public DayNode() {
         super();
-        this.setPrefHeight(45);
-        this.setPrefWidth(84);
+        this.setPrefHeight(100);
+        this.setPrefWidth(100);
     }
     
     public LocalDate getDate() {
