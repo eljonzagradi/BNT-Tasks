@@ -128,13 +128,13 @@ public class RoomsController implements Initializable {
 		        
 		        roomLayout.add(room, j, i);
 
-		        if(j < 4) {
-			        j++;		    		
+		        if(j < 3) {
+			        ++j;		    		
 		    	} 
 		        else {
 		    		j = 0;
-		            roomLayout.getRowConstraints().add(new RowConstraints(70));
-		            i++;
+		            roomLayout.getRowConstraints().add(new RowConstraints(80));
+		            ++i;
 		    	}
 		        
 
@@ -145,20 +145,20 @@ public class RoomsController implements Initializable {
 		}	
 	}
 	
-	private static final int COLUMN_COUNT = 5;
-    private int nextColumnIndex = COLUMN_COUNT;
-    private int currentRow = 0;
-	
-	public void populateGrid(Room room) {
-		
-		if (nextColumnIndex >= COLUMN_COUNT) {
-            nextColumnIndex = 0;
-            ++currentRow;
-            roomLayout.getRowConstraints().add(new RowConstraints(100));
-        }
-		roomLayout.addRow(currentRow, room);
-        nextColumnIndex++;				
-	}
+//	private static final int COLUMN_COUNT = 5;
+//    private int nextColumnIndex = COLUMN_COUNT;
+//    private int currentRow = 0;
+//	
+//	public void populateGrid(Room room) {
+//		
+//		if (nextColumnIndex >= COLUMN_COUNT) {
+//            nextColumnIndex = 0;
+//            ++currentRow;
+//            roomLayout.getRowConstraints().add(new RowConstraints(100));
+//        }
+//		roomLayout.addRow(currentRow, room);
+//        nextColumnIndex++;				
+//	}
 	
 	public void choiceBoxSetup() {
 		

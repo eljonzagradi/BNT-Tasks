@@ -8,12 +8,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class Room  extends Label {
@@ -29,13 +27,13 @@ public class Room  extends Label {
         this.price = new  SimpleIntegerProperty(price);
         
         this.setAlignment(Pos.CENTER);
-        this.setMaxHeight(200);
-        this.setMaxWidth(200);
+        this.setMaxHeight(300);
+        this.setMaxWidth(300);
 		this.setBackground(new Background(new BackgroundFill(Color.AQUA, new CornerRadii(0), new Insets(0))));
 	    this.setStyle("-fx-border-color: white;");
-		this.setText(  "ROOM:"     + number +"\n"
-				    + "Type: "    + type   +"\n"
-				+ "1 Night: " + price  + "$");
+		this.setText(  "ROOM:" +number+"\n"
+				               +type+"\n"
+				               +price+" LEK/NIGHT");
 		                                                
 		this.setOnMouseClicked(e -> {
 			

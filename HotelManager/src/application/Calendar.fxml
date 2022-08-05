@@ -109,14 +109,14 @@
             </GridPane>
          </children>
       </VBox>
-      <Label fx:id="checkout_x" alignment="CENTER" layoutX="647.0" layoutY="273.0" prefHeight="35.0" prefWidth="139.0" text="&lt;-- Click to choose">
+      <Label fx:id="checkout_x" alignment="CENTER" layoutX="638.0" layoutY="273.0" prefHeight="35.0" prefWidth="148.0" text="&lt;-- Click to choose">
          <font>
             <Font name="System Bold Italic" size="13.0" />
          </font>
       </Label>
-      <ToggleButton fx:id="setCheckin_b" layoutX="558.0" layoutY="230.0" mnemonicParsing="false" text="Check-In:" />
-      <ToggleButton fx:id="setCheckout_b" layoutX="558.0" layoutY="278.0" mnemonicParsing="false" text="Check-Out" />
-      <Label fx:id="checkin_x" alignment="CENTER" layoutX="647.0" layoutY="225.0" prefHeight="35.0" prefWidth="139.0" text="&lt;-- Click to choose">
+      <ToggleButton fx:id="setCheckin_b" layoutX="558.0" layoutY="230.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Check-in: " />
+      <ToggleButton fx:id="setCheckout_b" layoutX="558.0" layoutY="278.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Check out" />
+      <Label fx:id="checkin_x" alignment="CENTER" layoutX="638.0" layoutY="225.0" prefHeight="35.0" prefWidth="148.0" text="&lt;-- Click to choose">
          <font>
             <Font name="System Bold Italic" size="13.0" />
          </font>
@@ -166,7 +166,12 @@
             <TableColumn fx:id="createdAt_c" maxWidth="211.0" minWidth="-1.0" prefWidth="166.0" text="Created At" />
          </columns>
       </TableView>
-      <Button layoutX="728.0" layoutY="440.0" mnemonicParsing="false" text="Del" />
+      <Button fx:id="deleteReservation" layoutX="728.0" layoutY="440.0" mnemonicParsing="false" text="Del" />
       <Button layoutX="727.0" layoutY="477.0" mnemonicParsing="false" text="Edit" />
+      <Label fx:id="errorsDisplay" alignment="CENTER" contentDisplay="CENTER" layoutX="550.0" layoutY="57.0" prefHeight="29.0" prefWidth="242.0" textFill="RED">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

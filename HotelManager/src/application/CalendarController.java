@@ -12,8 +12,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -32,8 +35,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-enum isActive {CHECK_IN,CHECK_OUT}
 
 public class CalendarController implements Initializable {
 	
@@ -54,7 +55,6 @@ public class CalendarController implements Initializable {
 	@FXML private Button prevMonth;
 	@FXML private Button nextMonth;
 	@FXML private Text calendarTitle;
-    ToggleGroup toggleGroup = new ToggleGroup();
 
 	
 	//Calendar variables:
@@ -72,24 +72,28 @@ public class CalendarController implements Initializable {
 	@FXML private Label totalPrice_x;
     @FXML Button addReservation_b;
     @FXML Button changeRoom_b;
+    @FXML Button deleteReservation;
+    @FXML Label errorsDisplay;
         
     //New Reservation variables:
 	ObservableList<Reservation> reservations = FXCollections.observableArrayList();
-	ObservableList<DisabledRange> rangesToDisable = FXCollections.observableArrayList();
+	ObservableList<LocalDate> busyDates = FXCollections.observableArrayList();
+	List<LocalDate> listOfDates = null;
+    ToggleGroup toggleGroup = new ToggleGroup();
     ToggleGroup inANDout = new ToggleGroup();
-    isActive current = null;
     private LocalDate checkin;
     private LocalDate  checkout;
 	private long totalPrice;
-	public static int priceNight;
-	public static int selectedRoom;    
+	public static int priceNight = 2000;
+	public static int selectedRoom = 101; 
+	private DayNode selectedDayNode = null;
 ////////////////////////////////////////////////////////    
 /*              Getters & Setters                     */  
 ////////////////////////////////////////////////////////
-    public isActive getCurrent() {
-		return current;
+	public DayNode getSelectedDayNode() {
+		return selectedDayNode;
 	}
-
+	
 	public LocalDate getCheckin() {
 		return checkin;
 	}
@@ -110,8 +114,9 @@ public class CalendarController implements Initializable {
 		return totalPrice;
 	}
 	
-	public void setCurrent(isActive current ) {
-	    	this.current = current;
+	public void setSelectedDayNode(DayNode selectedDayNode) {
+		
+		this.selectedDayNode = selectedDayNode;
 	}
 	
 	public void setCheckin(LocalDate checkin) {
@@ -127,22 +132,14 @@ public class CalendarController implements Initializable {
 	public void setTotalPrice(long totalPrice) {
 		this.totalPrice = totalPrice;
 	}
+	
+
 
 /////////////////////////////////////////////////////////
 	
 	public void clickAddReservations() {
-		Reservation reservation = new Reservation(
-						getSelectedRoom(),
-						name_x.getText(),
-						lastName_x.getText(),
-						Date.valueOf(getCheckin()),
-						Date.valueOf(getCheckout()),
-						getTotalPrice(),
-						LocalDateTime.now(),
-						true
-						);
 		
-		if(!areEmpty() && !reservations.contains(reservation)) {
+		if(!areEmpty()) {
 			try {
 				PreparedStatement ps =
 						Database.con().prepareStatement(""
@@ -168,31 +165,43 @@ public class CalendarController implements Initializable {
 								);
 
 				ps.executeUpdate();
+				
+				name_x.clear();
+				lastName_x.clear();
+				checkin_x.setText("<-- Click to choose");
+				checkout_x.setText("<-- Click to choose");
+				totalPrice_x.setText(" ^ Choose ^");
+				setCheckin_b.setSelected(false);
+				setCheckout_b.setSelected(false);
+				errorsDisplay.setText(null);
+				busyDates.removeAll();
+				refresh();
+			}
 
-			}catch (SQLException e1) {
+			
+			catch (SQLException e1) {
 				e1.printStackTrace();
 				
 			}
-		} else { System.err.println("Err"); }
+		} else { 
+			errorsDisplay.setText("Please Complete all the required fields"); 
+		}
 		
 		
-		name_x.clear();
-		lastName_x.clear();
-		checkin_x.setText("<-- Click to choose");
-		checkout_x.setText("<-- Click to choose");
-		totalPrice_x.setText(" ^ Choose ^");
-		reservations.clear();
-		loadDataFromDB();
 		
 	}
 		
-	public void someInitalValues() {
+	public void refresh() {
+		reservations.clear();
+        busyDates.clear();
+		loadDataFromDB();
+		populateCalendar(currentYearMonth);
+	}
 		
+	public void someInitalValues() {
 		setCheckin_b.setToggleGroup(inANDout);
 		setCheckout_b.setToggleGroup(inANDout);
-		
 		room_x.setText("ROOM: " + getSelectedRoom());
-
 	}
 	
 	public long calcPrice(LocalDate checkin, LocalDate checkout) {
@@ -229,8 +238,7 @@ public class CalendarController implements Initializable {
 			return true;
 		} else {
 			return false;
-		}
-		
+		}	
 	}
 	
 	public void clickChangeRoom() 
@@ -264,10 +272,10 @@ public class CalendarController implements Initializable {
 		loadDataFromDB();
 	}
 	
-public void loadDataFromDB() {
-	
-	Statement statement;
-	ResultSet resultSet;
+	public void loadDataFromDB() {
+				
+		Statement statement;
+		ResultSet resultSet;
 		
 		try {
 			statement = Database.con().createStatement();
@@ -275,8 +283,7 @@ public void loadDataFromDB() {
 			resultSet = statement.executeQuery("select *\r\n"
 					           + "from hoteldatabase.reservations r\r\n"
 					           + "where number = '"+getSelectedRoom()+"'\r\n"
-					           + "order by created_at DESC");
-		   
+					           );
 			while (resultSet.next()) {
 		    	
 		    	String name = resultSet.getString("name");
@@ -286,10 +293,6 @@ public void loadDataFromDB() {
 		    	int totalPrice  = resultSet.getInt("total_price");
 		    	Timestamp timestamp = resultSet.getTimestamp("created_at");
 		    	
-		    	rangesToDisable.add(
-		    			new DisabledRange(checkin, checkout));
-
-	    	    		
 		    	reservations.add(
 		    			new Reservation(    
 		    					
@@ -305,13 +308,37 @@ public void loadDataFromDB() {
 				reservationsTable.setItems(reservations);
 
 		    }
-		    
+			
+			for(Reservation r : reservations) {
+				
+				ObjectProperty<Date> startDate = r.getCheckin();
+				ObjectProperty<Date> endDate = r.getCheckout();
+				
+				listOfDates = (
+						 startDate.get().toLocalDate())
+						.datesUntil(endDate.get().toLocalDate())
+						.collect(Collectors.toList());
+				
+				for(LocalDate date : listOfDates) {
+					
+					if(!busyDates.contains(date)) {
+						busyDates.add(date);
+						
+					} else {
+//						System.out.println(date);
+					}
+					
+				}	
+			}
+  
 		} catch (SQLException e) {
 			e.printStackTrace();
 			
 		}
 		
 	}
+	
+	
 	
     public void CalendarView(YearMonth yearMonth) 
     {
@@ -320,7 +347,6 @@ public void loadDataFromDB() {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 7; j++) {
             	DayNode dateCell = new DayNode();
-            	dateCell.setToggleGroup(toggleGroup);
                 calendar.add(dateCell,j,i);
                 allCalendarDays.add(dateCell);
             }
@@ -341,15 +367,19 @@ public void loadDataFromDB() {
         for (DayNode dateCell : allCalendarDays) {
         	
         	String txt = String.valueOf(calendarDate.getDayOfMonth());
-
         	dateCell.setDate(calendarDate);
+        	
         	dateCell.setText(txt);
-        	select(dateCell);
-        	//Need Work
-//            LocalDate today = LocalDate.now();
-//        	dateCell.setDisable(calendarDate.compareTo(today) < 0);
-//        	dateCell.setDisable(disable(calendarDate));
-
+//        	dateCell.setBusy(false);
+    		dateCell.setDisable(false);
+    		dateCell.setSelected(false);
+    		dateCell.setToggleGroup(toggleGroup);
+    		
+    		addToTempBusyDays();    		
+    		disablePastDates(dateCell);
+    		setBusyDates(dateCell);
+        	//select(dateCell);
+        	
             calendarDate = calendarDate.plusDays(1);
         }
        
@@ -359,18 +389,49 @@ public void loadDataFromDB() {
         		String.valueOf(yearMonth.getYear()));
     }
     
-    public boolean disable(LocalDate calendarDate ) {
+    public void disablePastDates(DayNode dateCell) {
+    	if(dateCell.getDate().compareTo(LocalDate.now()) < 0) {
+    		dateCell.setDisable(true);
+    	}
+    }
+    public void setBusyDates(DayNode dateCell) {
     	
-   	 boolean disable = rangesToDisable.stream()
-	            .filter(r->r.getCheck_in().isBefore(calendarDate))
-	            .filter(r->r.getCheck_out().isAfter(calendarDate))
-	            .findAny()
-	            .isPresent();
-   	 
-	return disable;
+    	if(busyDates.contains(dateCell.getDate())) {
+    		dateCell.setToggleGroup(null);
+    		dateCell.setSelected(true);
+    	} 
+    }
+    
+    public void addToTempBusyDays() {
+    	
+//   	if(getCheckin() == null || getCheckout() ==null) {
+    		
+			busyDates.add(getCheckin());
+			busyDates.add(getCheckout());
+    		
+//    	}
+//    	else if(getCheckin() != null && getCheckout() !=null) {
+//    	List<LocalDate>	tempList = (
+//    				getCheckin())
+//					.datesUntil(getCheckout().plusDays(1))
+//					.collect(Collectors.toList());
+//    	for(LocalDate tempDate : tempList) {
+//    		
+//    		if(tempDate.compareTo(getCheckout()) <= 0) {
+//    			
+//    			busyDates.add(tempDate);
+//    			
+//    		}    else {
+//    			   
+//    			if(busyDates.contains(tempDate) && getSelectedDayNode().getDate().isBefore(tempDate) ) {
+//    				  busyDates.remove(tempDate);
+//    				  }
+//    			 }
+//    		}
+//    	}
     	
     }
-   
+    
 	public void select(DayNode selected) 
     {
     	
@@ -378,65 +439,79 @@ public void loadDataFromDB() {
     			
     			e -> {
     				
-    				if(setCheckin_b.isSelected()) 
+    				setSelectedDayNode(selected);
+    				
+    				if(!setCheckin_b.isSelected() && !setCheckout_b.isSelected()) 
+    				{
+    					setCheckin_b.setSelected(true);
+    					setCheckin(selected.getDate());
+    					checkin_x.setText(getCheckin().toString());
+			    		selected.setToggleGroup(null);
+    					setCheckout_b.setSelected(true);
+    					
+    				}
+    				
+    				else if(setCheckin_b.isSelected()) 
     				{
     					setCheckin(selected.getDate());
     					checkin_x.setText(getCheckin().toString());
+			    		selected.setToggleGroup(null);
+    					setCheckout_b.setSelected(true);
     					
-    					setCheckout_b.setOnMouseClicked(ex -> {
-    				    	if(getCheckin() == null) {
-    				    		checkout_x.setText("Please"
-    									+ "\n"
-    									+ " Select Check-in first");
-    				    		
-    				    	} else {
-    				    		
-    				    		selected.setToggleGroup(null);
-    				    		
-    				    		
-    				    	}
-    					});
+    					setCheckout_b.setOnMouseClicked(checkout -> 
+    					
+    					{
+    				    selected.setToggleGroup(null);
+    				    });
+    					
     				} 
-    				
     			
     				else if(setCheckout_b.isSelected() && getCheckin() != null)
     			   	{
     					setCheckout(selected.getDate());
         				checkout_x.setText(getCheckout().toString());
- 
-    				}	
-    				
-    			   	else if(!setCheckin_b.isSelected() && !setCheckout_b.isSelected()) {
-						
-						setCheckin(null);
-						setCheckout(null);
-						
-						checkin_x.setText("Click the button "
-								+ "\n"
-								+ " to set check-in");
-						
-						checkout_x.setText("Click the button "
-								+ "\n"
-								+ " to set check-out");
-						
-    			   	}
-    					setTotalPrice(calcPrice(getCheckin(),getCheckout()));
-    					totalPrice_x.setText(getTotalPrice()+" LEK");
+     				
+        				setCheckin_b.setOnMouseClicked(checkin -> {
+        					
+        					checkout_x.setText("<-- Click to choose");
+        					checkin_x.setText("<-- Click to choose");
 
+        					setCheckin(null);
+        					setCheckout(null);
+        					
+        					refresh();
+        			});
+ 
+    				} else if(setCheckout_b.isSelected() && getCheckin() == null)	{
+    					
+    					
+    				}
+    				
+    				setTotalPrice(calcPrice(getCheckin(),getCheckout()));
+    				totalPrice_x.setText(getTotalPrice()+" LEK");
+    				
     			});
 		
-	}
+    }
+	
+	
 	
     public void previousMonth() 
     {
         currentYearMonth = currentYearMonth.minusMonths(1);
+		reservations.clear();
+        loadDataFromDB();
         populateCalendar(currentYearMonth);
+
     }
 
     public void nextMonth() 
     {
         currentYearMonth = currentYearMonth.plusMonths(1);
+		reservations.clear();
+        loadDataFromDB();
         populateCalendar(currentYearMonth);
+
     }
 
     public ArrayList<DayNode> getAllCalendarDays() 
@@ -451,7 +526,8 @@ public void loadDataFromDB() {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		tableSetup();
-		CalendarView(YearMonth.now());
 		someInitalValues();
+		CalendarView(YearMonth.now());
+
 	}
 }
