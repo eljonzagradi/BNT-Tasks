@@ -109,45 +109,43 @@
             </GridPane>
          </children>
       </VBox>
-      <Label fx:id="checkout_x" alignment="CENTER" layoutX="638.0" layoutY="273.0" prefHeight="35.0" prefWidth="148.0" text="&lt;-- Click to choose">
+      <Label fx:id="checkout_x" alignment="CENTER" layoutX="639.0" layoutY="236.0" prefHeight="35.0" prefWidth="148.0" text="&lt;-- Click to choose">
          <font>
             <Font name="System Bold Italic" size="13.0" />
          </font>
       </Label>
-      <ToggleButton fx:id="setCheckin_b" layoutX="558.0" layoutY="230.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Check-in: " />
-      <ToggleButton fx:id="setCheckout_b" layoutX="558.0" layoutY="278.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Check out" />
-      <Label fx:id="checkin_x" alignment="CENTER" layoutX="638.0" layoutY="225.0" prefHeight="35.0" prefWidth="148.0" text="&lt;-- Click to choose">
+      <Label fx:id="checkin_x" alignment="CENTER" layoutX="639.0" layoutY="188.0" prefHeight="35.0" prefWidth="148.0" text="&lt;-- Click to choose">
          <font>
             <Font name="System Bold Italic" size="13.0" />
          </font>
       </Label>
-      <Button fx:id="addReservation_b" layoutX="555.0" layoutY="368.0" mnemonicParsing="false" onAction="#clickAddReservations" prefHeight="35.0" prefWidth="232.0" text="Add Reservation">
+      <Button fx:id="addReservation_b" layoutX="555.0" layoutY="324.0" mnemonicParsing="false" onAction="#clickAddReservations" prefHeight="35.0" prefWidth="232.0" text="Add Reservation">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font></Button>
-      <TextField fx:id="lastName_x" layoutX="646.0" layoutY="181.0" prefHeight="35.0" prefWidth="139.0" promptText="Enter Client Name" />
-      <TextField fx:id="name_x" layoutX="646.0" layoutY="133.0" prefHeight="35.0" prefWidth="139.0" promptText="Enter Client Name" />
-      <Label fx:id="totalPrice_x" alignment="CENTER" layoutX="648.0" layoutY="316.0" prefHeight="45.0" prefWidth="139.0" text="^ Choose ^">
+      <TextField fx:id="lastName_x" layoutX="647.0" layoutY="144.0" prefHeight="35.0" prefWidth="139.0" promptText="Enter Client Name" />
+      <TextField fx:id="name_x" layoutX="647.0" layoutY="96.0" prefHeight="35.0" prefWidth="139.0" promptText="Enter Client Name" />
+      <Label fx:id="totalPrice_x" alignment="CENTER" layoutX="649.0" layoutY="279.0" prefHeight="35.0" prefWidth="139.0" text="^ Choose ^">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </Label>
-      <Label layoutX="560.0" layoutY="316.0" prefHeight="45.0" prefWidth="40.0" text="Price:">
+      <Label layoutX="555.0" layoutY="279.0" prefHeight="45.0" prefWidth="40.0" text="Price:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label layoutX="555.0" layoutY="176.0" prefHeight="45.0" prefWidth="80.0" text="Last Name:">
+      <Label layoutX="555.0" layoutY="139.0" prefHeight="45.0" prefWidth="80.0" text="Last Name:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label layoutX="555.0" layoutY="128.0" prefHeight="45.0" prefWidth="49.0" text="Name:">
+      <Label layoutX="555.0" layoutY="91.0" prefHeight="45.0" prefWidth="49.0" text="Name:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="room_x" alignment="CENTER" layoutX="555.0" layoutY="86.0" prefHeight="35.0" prefWidth="232.0" text="Selected Room">
+      <Label fx:id="room_x" alignment="CENTER" layoutX="554.0" layoutY="56.0" prefHeight="35.0" prefWidth="232.0" text="Selected Room">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
@@ -166,12 +164,17 @@
             <TableColumn fx:id="createdAt_c" maxWidth="211.0" minWidth="-1.0" prefWidth="166.0" text="Created At" />
          </columns>
       </TableView>
-      <Button fx:id="deleteReservation" layoutX="728.0" layoutY="440.0" mnemonicParsing="false" text="Del" />
-      <Button layoutX="727.0" layoutY="477.0" mnemonicParsing="false" text="Edit" />
-      <Label fx:id="errorsDisplay" alignment="CENTER" contentDisplay="CENTER" layoutX="550.0" layoutY="57.0" prefHeight="29.0" prefWidth="242.0" textFill="RED">
+      <Button fx:id="deleteReservation" layoutX="718.0" layoutY="480.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="72.0" text="Delete" />
+      <Label fx:id="errorsDisplay" alignment="CENTER" contentDisplay="CENTER" layoutX="551.0" layoutY="366.0" prefHeight="29.0" prefWidth="238.0" textFill="RED" />
+      <RadioButton fx:id="setCheckin_b" layoutX="555.0" layoutY="193.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="89.0" text="Check-in">
          <font>
-            <Font size="14.0" />
+            <Font name="System Bold Italic" size="14.0" />
          </font>
-      </Label>
+      </RadioButton>
+      <RadioButton fx:id="setCheckout_b" layoutX="555.0" layoutY="241.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="106.0" text="Check-out">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </RadioButton>
    </children>
 </AnchorPane>

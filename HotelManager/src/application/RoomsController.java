@@ -33,28 +33,11 @@ public class RoomsController implements Initializable {
 	
 	List<Integer> roomList = new ArrayList<Integer>();
 	
-	public boolean roomExists(int roomNum ) {
-		
-		boolean exists = false;
-		
-		if(roomList.contains(roomNum)) {
-			
-			exists = true;
-			
-		} else {
-			
-			roomList.add(roomNum);
-		
-		}
-		return exists;
-	}
-	
 	public boolean areEmpty() {
 		
-		if(
-				room_x.getText().isBlank()
+		if(     room_x.getText().isBlank()
 			||  price_x.getText().isBlank()
-			||  type_x.getValue() == null) 
+			||  type_x.getValue() == "Room Types") 
 		
 		{
 			return true;
@@ -69,11 +52,12 @@ public class RoomsController implements Initializable {
 	
 	public void clickAddReservation() {
 		
+        if(!areEmpty()) {
 		int roomNum = Integer.parseInt(room_x.getText());
 		int roomPrice = Integer.parseInt(price_x.getText());
-		String roomType =type_x.getValue();
+		String roomType = type_x.getValue();
 		
-		if(!areEmpty() && !roomExists(roomNum)) {
+		if(!roomList.contains(roomNum)) {
 			
 			try {
 				PreparedStatement ps =
@@ -86,19 +70,19 @@ public class RoomsController implements Initializable {
 				if(status != 0) {
 					
 					status_l.setText("!!!Success!!!");
-					
 				}
-				
-			}catch (SQLException e1) {
+			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
 			
-		} else {
-			status_l.setText("Error!!!!");
+			roomList.clear();
+			loadRooms();
+		}}
+        
+        else {
+			status_l.setText("Please complete all \n the required fields");
 
 		}
-		roomList.clear();
-		loadRooms();
 	}
 	
 	public void loadRooms() {
@@ -145,25 +129,10 @@ public class RoomsController implements Initializable {
 		}	
 	}
 	
-//	private static final int COLUMN_COUNT = 5;
-//    private int nextColumnIndex = COLUMN_COUNT;
-//    private int currentRow = 0;
-//	
-//	public void populateGrid(Room room) {
-//		
-//		if (nextColumnIndex >= COLUMN_COUNT) {
-//            nextColumnIndex = 0;
-//            ++currentRow;
-//            roomLayout.getRowConstraints().add(new RowConstraints(100));
-//        }
-//		roomLayout.addRow(currentRow, room);
-//        nextColumnIndex++;				
-//	}
-	
 	public void choiceBoxSetup() {
 		
 		type_x.setValue("Room Types");
-		
+				
 		ObservableList<String> roomTypes = 
 				FXCollections
 				.observableArrayList(

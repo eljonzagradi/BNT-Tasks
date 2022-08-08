@@ -32,7 +32,7 @@
             </GridPane>
          </content>
       </ScrollPane>
-      <Label fx:id="status_l" alignment="CENTER" layoutX="14.0" layoutY="325.0" prefHeight="41.0" prefWidth="149.0" text="Status">
+      <Label fx:id="status_l" alignment="CENTER" layoutX="14.0" layoutY="325.0" prefHeight="40.0" prefWidth="150.0">
          <font>
             <Font size="15.0" />
          </font>
