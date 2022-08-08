@@ -92,9 +92,6 @@ public class CalendarController implements Initializable {
 ////////////////////////////////////////////////////////    
 /*              Getters & Setters                     */  
 ////////////////////////////////////////////////////////
-//	public DayNode getSelectedDayNode() {
-//		return selectedDayNode;
-//	}
 	
 	public LocalDate getCheckin() {
 		return checkin;
@@ -115,12 +112,7 @@ public class CalendarController implements Initializable {
 	public long getTotalPrice() {
 		return totalPrice;
 	}
-	
-//	public void setSelectedDayNode(DayNode selectedDayNode) {
-//		
-//		this.selectedDayNode = selectedDayNode;
-//	}
-	
+		
 	public void setCheckin(LocalDate checkin) {
 		
         this.checkin = checkin;
@@ -135,8 +127,6 @@ public class CalendarController implements Initializable {
 		this.totalPrice = totalPrice;
 	}
 	
-
-
 /////////////////////////////////////////////////////////
 	
 	public void clickAddReservations() {
@@ -176,7 +166,8 @@ public class CalendarController implements Initializable {
 				setCheckin_b.setSelected(false);
 				setCheckout_b.setSelected(false);
 				errorsDisplay.setText(null);
-
+				setCheckin(null);
+				setCheckout(null);
 			    refresh();
 			}
 
@@ -194,8 +185,6 @@ public class CalendarController implements Initializable {
 	}
 		
 	public void refresh() {
-        setCheckin(null);
-        setCheckout(null);
 		reservations.clear();
         busyDates.clear();
 		loadDataFromDB();
@@ -206,6 +195,7 @@ public class CalendarController implements Initializable {
 		setCheckin_b.setToggleGroup(inANDout);
 		setCheckout_b.setToggleGroup(inANDout);
 		room_x.setText("ROOM: " + getSelectedRoom());
+		
 		deleteReservation.setOnAction(e -> {
 		    Reservation selectedItem = reservationsTable.getSelectionModel().getSelectedItem();
 		    if (selectedItem != null) {
@@ -223,7 +213,6 @@ public class CalendarController implements Initializable {
 				}
 		        }}
 		    });
-//		});
 	}
 	
 	public long calcPrice(LocalDate checkin, LocalDate checkout) {
@@ -347,8 +336,6 @@ public class CalendarController implements Initializable {
 					if(!busyDates.contains(date)) {
 						busyDates.add(date);
 						
-					} else {
-						setCheckout_b.setOnAction(e ->System.out.println(date));
 					}
 					
 				}	
@@ -397,7 +384,7 @@ public class CalendarController implements Initializable {
     		dateCell.setSelected(false);
     		dateCell.setToggleGroup(toggleGroup);
     		
-    		addToTempBusyDays();    		
+    		//addToTempBusyDays();    		
     		disablePastDates(dateCell);
     		setBusyDates(dateCell);
         	select(dateCell);
@@ -415,24 +402,30 @@ public class CalendarController implements Initializable {
     	if(dateCell.getDate().compareTo(LocalDate.now()) < 0) {
     		dateCell.setDisable(true);
     	}
+    	if( getCheckin() != null && dateCell.getDate().compareTo(getCheckin()) <= 0) {
+    		dateCell.setDisable(true);	
+    	}
+    	if(getCheckout() != null && dateCell.getDate().compareTo(getCheckout()) <= 0) {
+    		dateCell.setStyle("-fx-background-color:yellow");
+    	}
     }
     public void setBusyDates(DayNode dateCell) {
     	
     	if(busyDates.contains(dateCell.getDate())) {
     		dateCell.setToggleGroup(null);
     		dateCell.setSelected(true);
-    	} 
+    	}
+
     }
     
-    public void addToTempBusyDays() {
-    	
-			busyDates.add(getCheckin());
-			busyDates.add(getCheckout());	
-    }
+//    public void addToTempBusyDays() {
+//    	
+//			busyDates.add(getCheckin());
+//			busyDates.add(getCheckout());	
+//    }
     
 	public void select(DayNode selected) 
     {
-		setCheckin_b.setSelected(true);
     	
 		selected.setOnMouseClicked(
     			
@@ -443,13 +436,8 @@ public class CalendarController implements Initializable {
     					setCheckin(selected.getDate());
     					checkin_x.setText(getCheckin().toString());
 			    		selected.setToggleGroup(null);
+    					refresh();
     					setCheckout_b.setSelected(true);
-    					
-    					setCheckout_b.setOnMouseClicked(checkout -> 
-    					
-    					{
-    				    selected.setToggleGroup(null);
-    				    });
     					
     				} 
     			
@@ -457,17 +445,18 @@ public class CalendarController implements Initializable {
     			   	{
     					setCheckout(selected.getDate());
         				checkout_x.setText(getCheckout().toString());
-     				
+        				//refresh();
         				setCheckin_b.setOnMouseClicked(checkin -> {
         					
         					checkout_x.setText("<-- Click to choose");
         					checkin_x.setText("<-- Click to choose");
         					totalPrice_x.setText(" ^ Choose ^");
-        					refresh();
-        					
+        					busyDates.clear();
+        					setCheckin(null);
+        					setCheckout(null);
+        					refresh();	
         				});
         			}
-
     				setTotalPrice(calcPrice(getCheckin(),getCheckout()));
     				totalPrice_x.setText(getTotalPrice()+" LEK");
     				
@@ -504,8 +493,9 @@ public class CalendarController implements Initializable {
         this.allCalendarDays = allCalendarDays;
     }
 
-	@Override
+   	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		setCheckin_b.setSelected(true);
 		tableSetup();
 		someInitalValues();
 		CalendarView(YearMonth.now());
