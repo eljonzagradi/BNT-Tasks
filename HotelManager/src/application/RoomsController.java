@@ -128,7 +128,7 @@ public class RoomsController implements Initializable {
 		    	Room room = new Room(roomNum, roomType, roomPrice);
 				//setMenu(room);
 
-		    	if(        checkin !=null && checkout !=null ){
+		    	if(checkin !=null && checkout !=null ){
 		    			
 		    	if(checkin.toLocalDate().compareTo(todayDate) * todayDate.compareTo(checkout.toLocalDate()) >= 0){
 		    		room.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(0), new Insets(0))));

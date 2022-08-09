@@ -80,19 +80,24 @@ public class CalendarController implements Initializable {
     //New Reservation variables:
 	ObservableList<Reservation> reservations = FXCollections.observableArrayList();
 	ObservableList<LocalDate> busyDates = FXCollections.observableArrayList();
+	ObservableList<LocalDate> checkins = FXCollections.observableArrayList();
+
 	List<LocalDate> listOfDates = null;
-    ToggleGroup toggleGroup = new ToggleGroup();
-    ToggleGroup inANDout = new ToggleGroup();
+
+    ToggleGroup toggleGR = new ToggleGroup();
     private LocalDate checkin;
     private LocalDate  checkout;
 	private long totalPrice;
 	public static int priceNight;
 	public static int selectedRoom; 
-//	private DayNode selectedDayNode;
+    private DayNode lastSelected = null;
+
 ////////////////////////////////////////////////////////    
 /*              Getters & Setters                     */  
 ////////////////////////////////////////////////////////
-	
+	public DayNode getLastSelected() {
+		return lastSelected;
+	}
 	public LocalDate getCheckin() {
 		return checkin;
 	}
@@ -111,6 +116,10 @@ public class CalendarController implements Initializable {
 	
 	public long getTotalPrice() {
 		return totalPrice;
+	}
+	
+	public void setLastSelected(DayNode lastSelected) {
+		this.lastSelected = lastSelected;
 	}
 		
 	public void setCheckin(LocalDate checkin) {
@@ -163,7 +172,7 @@ public class CalendarController implements Initializable {
 				checkin_x.setText("<-- Click to choose");
 				checkout_x.setText("<-- Click to choose");
 				totalPrice_x.setText(" ^ Choose ^");
-				setCheckin_b.setSelected(false);
+				setCheckin_b.setSelected(true);
 				setCheckout_b.setSelected(false);
 				errorsDisplay.setText(null);
 				setCheckin(null);
@@ -187,27 +196,35 @@ public class CalendarController implements Initializable {
 	public void refresh() {
 		reservations.clear();
         busyDates.clear();
+        checkins.clear();
 		loadDataFromDB();
 		populateCalendar(currentYearMonth);
 	}
 		
 	public void someInitalValues() {
-		setCheckin_b.setToggleGroup(inANDout);
-		setCheckout_b.setToggleGroup(inANDout);
+		setCheckin_b.setSelected(true);
+		setCheckin_b.setToggleGroup(toggleGR);
+		setCheckout_b.setToggleGroup(toggleGR);
 		room_x.setText("ROOM: " + getSelectedRoom());
 		
 		deleteReservation.setOnAction(e -> {
 		    Reservation selectedItem = reservationsTable.getSelectionModel().getSelectedItem();
 		    if (selectedItem != null) {
+		    	
 		        int action = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?");
 		        if(action == 0) {
 		        try {
 		        	PreparedStatement statement = Database.con().prepareStatement(
-		        			"DELETE FROM `hoteldatabase`.`reservations` "
+		        			
+		        			  "DELETE FROM `hoteldatabase`.`reservations` "
 		        			+ "WHERE (`id_reservation` = ? );");
+		        	
 					statement.setInt(1, selectedItem.getReservationId());
 			        statement.executeUpdate();
-				    refresh();
+			        setCheckin(null);
+			        setCheckout(null);
+			   	    refresh();
+			   	    
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -247,8 +264,11 @@ public class CalendarController implements Initializable {
 		   ) {
 			
 			return true;
+			
 		} else {
+			
 			return false;
+			
 		}	
 	}
 	
@@ -282,7 +302,7 @@ public class CalendarController implements Initializable {
 		
 		loadDataFromDB();
 	}
-	
+		
 	public void loadDataFromDB() {
 				
 		Statement statement;
@@ -320,17 +340,21 @@ public class CalendarController implements Initializable {
 				reservationsTable.setItems(reservations);
 
 		    }
-			
+			if(reservations != null) {
 			for(Reservation r : reservations) {
 				
 				ObjectProperty<Date> startDate = r.getCheckin();
 				ObjectProperty<Date> endDate = r.getCheckout();
 				
+				checkins.add(startDate.get().toLocalDate());
+				
+
 				listOfDates = (
-						 startDate.get().toLocalDate())
+						 startDate.get().toLocalDate().plusDays(1))
 						.datesUntil(endDate.get().toLocalDate())
 						.collect(Collectors.toList());
 				
+
 				for(LocalDate date : listOfDates) {
 					
 					if(!busyDates.contains(date)) {
@@ -338,8 +362,10 @@ public class CalendarController implements Initializable {
 						
 					}
 					
-				}	
-			}
+				}
+				   busyDates.addAll(checkins);
+
+			}}
   
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -347,7 +373,6 @@ public class CalendarController implements Initializable {
 		}
 		
 	}
-	
 	
 	
     public void CalendarView(YearMonth yearMonth) 
@@ -381,10 +406,7 @@ public class CalendarController implements Initializable {
         	
         	dateCell.setText(txt);
     		dateCell.setDisable(false);
-    		dateCell.setSelected(false);
-    		dateCell.setToggleGroup(toggleGroup);
     		
-    		//addToTempBusyDays();    		
     		disablePastDates(dateCell);
     		setBusyDates(dateCell);
         	select(dateCell);
@@ -399,72 +421,96 @@ public class CalendarController implements Initializable {
     }
     
     public void disablePastDates(DayNode dateCell) {
+    	
+    	LocalDate future = null;
+    	
+    	if(checkins != null && getCheckin() != null) {
+		FXCollections.sort(checkins);
+  		for(LocalDate date : checkins) {
+			if(date.isAfter(getCheckin())) {
+				future = date;
+				break;
+			}}
+		}
+    	
     	if(dateCell.getDate().compareTo(LocalDate.now()) < 0) {
     		dateCell.setDisable(true);
     	}
-    	if( getCheckin() != null && dateCell.getDate().compareTo(getCheckin()) <= 0) {
-    		dateCell.setDisable(true);	
-    	}
-    	if(getCheckout() != null && dateCell.getDate().compareTo(getCheckout()) <= 0) {
-    		dateCell.setStyle("-fx-background-color:yellow");
-    	}
-    }
-    public void setBusyDates(DayNode dateCell) {
     	
-    	if(busyDates.contains(dateCell.getDate())) {
-    		dateCell.setToggleGroup(null);
-    		dateCell.setSelected(true);
+    	if(getCheckin() != null 
+    			&& dateCell.getDate().compareTo(getCheckin()) <= 0) {
+    		dateCell.setDisable(true);
     	}
 
+   		if(future != null) 
+   		{
+   			busyDates.remove(future);
+   		}
+    	
+		if(future != null && getCheckin() != null && dateCell.getDate().isAfter(future)) {
+			dateCell.setDisable(true);
+		}
+		
+    	if(getCheckout() != null 
+    			&& getCheckin().compareTo(dateCell.getDate()) 
+    			* dateCell.getDate().compareTo(getCheckout()) >= 0) {
+    		    
+    		dateCell.setStyle("-fx-background-color:yellow");
+    	
+    	} else {  dateCell.setStyle(null); }
     }
     
-//    public void addToTempBusyDays() {
-//    	
-//			busyDates.add(getCheckin());
-//			busyDates.add(getCheckout());	
-//    }
+    public void setBusyDates(DayNode dateCell) {
+    	if(busyDates.contains(dateCell.getDate())) {
+    		dateCell.setStyle("-fx-background-color:aqua");
+    	}
+    }
     
 	public void select(DayNode selected) 
     {
-    	
 		selected.setOnMouseClicked(
     			
     			e -> {
+    				
 
-    				if(setCheckin_b.isSelected() && !setCheckout_b.isSelected()) 
-    				{
+
+    				if(setCheckin_b.isSelected()) 
+    				{  
     					setCheckin(selected.getDate());
     					checkin_x.setText(getCheckin().toString());
-			    		selected.setToggleGroup(null);
     					refresh();
+        				selected.setStyle("-fx-background-color:red");
     					setCheckout_b.setSelected(true);
-    					
+    					setLastSelected(selected);
     				} 
     			
-    				else if(setCheckout_b.isSelected() && getCheckin() != null && !setCheckin_b.isSelected() )
+    				else if(setCheckout_b.isSelected() && getCheckin() != null)
     			   	{
     					setCheckout(selected.getDate());
         				checkout_x.setText(getCheckout().toString());
-        				//refresh();
+        				refresh();
+        				getLastSelected().setStyle("-fx-background-color:red");
+        				selected.setStyle("-fx-background-color:red");
+
         				setCheckin_b.setOnMouseClicked(checkin -> {
         					
         					checkout_x.setText("<-- Click to choose");
         					checkin_x.setText("<-- Click to choose");
         					totalPrice_x.setText(" ^ Choose ^");
+        					setLastSelected(null);
         					busyDates.clear();
         					setCheckin(null);
         					setCheckout(null);
         					refresh();	
         				});
+        			} else if(setCheckout_b.isSelected() && getCheckin() == null) {
+        				
+        				checkout_x.setText("Please! Select Check-in first");
         			}
     				setTotalPrice(calcPrice(getCheckin(),getCheckout()));
-    				totalPrice_x.setText(getTotalPrice()+" LEK");
-    				
+    				totalPrice_x.setText(getTotalPrice()+" LEK");	
     			});
-		
     }
-	
-	
 	
     public void previousMonth() 
     {
@@ -488,17 +534,15 @@ public class CalendarController implements Initializable {
     {
         return allCalendarDays;
     }
-
+    
     public void setAllCalendarDays(ArrayList<DayNode> allCalendarDays) {
         this.allCalendarDays = allCalendarDays;
     }
 
    	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		setCheckin_b.setSelected(true);
 		tableSetup();
 		someInitalValues();
 		CalendarView(YearMonth.now());
-
 	}
 }

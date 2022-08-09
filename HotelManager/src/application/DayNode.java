@@ -2,9 +2,10 @@ package application;
 
 import java.time.LocalDate;
 
-import javafx.scene.control.ToggleButton;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 
-public class DayNode  extends ToggleButton{
+public class DayNode  extends Label{
 	
     private LocalDate date;
     private boolean busy = false;
@@ -12,8 +13,11 @@ public class DayNode  extends ToggleButton{
     
     public DayNode() {
         super();
-        this.setPrefHeight(100);
-        this.setPrefWidth(100);
+        this.setAlignment(Pos.CENTER);
+        this.setPrefHeight(80);
+        this.setPrefWidth(80);
+        this.getStyleClass().add("costum");
+
     }
     
     public LocalDate getDate() {
