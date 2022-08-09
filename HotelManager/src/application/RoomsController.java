@@ -18,9 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -113,6 +111,7 @@ public class RoomsController implements Initializable {
 			
 			int i = 0;
 			int j = 0;
+			
 	    	LocalDate todayDate = LocalDate.now();
 
 			
@@ -123,94 +122,120 @@ public class RoomsController implements Initializable {
 		    	int roomPrice = resultSet.getInt("price");
 		    	Date checkin = resultSet.getDate("check_in");
 		    	Date checkout = resultSet.getDate("check_out");
-
-		        
-		    	Room room = new Room(roomNum, roomType, roomPrice);
-				//setMenu(room);
-
-		    	if(checkin !=null && checkout !=null ){
-		    			
-		    	if(checkin.toLocalDate().compareTo(todayDate) * todayDate.compareTo(checkout.toLocalDate()) >= 0){
-		    		room.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(0), new Insets(0))));
-
-		    	}}
 		    	
-		        roomList.add(roomNum);
-		        
-		        roomLayout.add(room, j, i);
-
-		        if(j < 3) {
-			        ++j;		    		
-		    	} 
-		        else {
-		    		j = 0;
-		            roomLayout.getRowConstraints().add(new RowConstraints(80));
-		            ++i;
+		    	if(!roomList.contains(roomNum))
+		    	
+		    	{
+		    		Room room = 
+		    				new Room(
+		    						roomNum,
+		    						roomType,
+		    						roomPrice
+		    						);
+		    		
+		    		if(checkin !=null && checkout !=null ) {
+		    			
+		    			if(checkin.toLocalDate().compareTo(todayDate) 
+		    					* todayDate.compareTo(checkout.toLocalDate()) >= 0)
+		    			
+		    			{
+		    				room.setBackground(new Background(
+		    						new BackgroundFill(
+		    								Color.RED,
+		    								new CornerRadii(0),
+		    								new Insets(0))));
+		    				
+		    			}
+		    			
+		    		}
+		    		
+		    		roomList.add(roomNum);
+		    		roomLayout.add(room, j, i);
+		    		
+		    		if(j < 3) {
+		    			
+		    			++j;
+		    			
+		    		} 
+		    		else 
+		    		{
+		    			j = 0;
+		    			
+		    			roomLayout.getRowConstraints()
+		    			.add(new RowConstraints(80));
+		    			
+		    			++i;
+		    			
+		    		}
+		    		
 		    	}
-		        
-
-		        
-
+		    	
 		    }
 		    
 		} catch (SQLException e) {
-			e.printStackTrace();	
-		}	
+			
+			e.printStackTrace();
+			
+		}
 		
 	}
 	
 	public void choiceBoxSetup() {
+		String addType = "Click to add new Room Type";
 		
 		type_x.setValue("Room Types");
 				
 		ObservableList<String> roomTypes = 
-				FXCollections
+			    FXCollections
 				.observableArrayList(
 						"Single","Double",
 						"Twin","Suite");
 		
 		type_x.setItems(roomTypes);
-	
+		roomTypes.add(addType);
+		type_x.setOnAction(event -> {
+			if(type_x.getValue() == addType) {
+		    System.out.println(type_x.getValue());
+		    }
+		});
 	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		today_l.setText("TODAY: "+LocalDate.now());
+		today_l.setText("TODAY: " + LocalDate.now());
 		choiceBoxSetup();
 		loadRooms();
 	}
 	
 
 	
-	public void setMenu(Room selectedRoom) {
-		
-		ContextMenu contextMenu = new ContextMenu();
-		MenuItem del_b = new MenuItem("Delete");
-		del_b.setOnAction((event) -> {
-			
-			try {
-				PreparedStatement ps =
-						Database.con().prepareStatement
-		             ("SET FOREIGN_KEY_CHECKS=0;"+
-		      		 "	DELETE FROM `hoteldatabase`.`rooms` WHERE (`number` = '"+selectedRoom.getNumber()+"');");
-				
-				int status = ps.executeUpdate();
-				
-				if(status != 0) {
-					
-					status_l.setText("!!!Room Deleted!!!");
-				}
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
+//	public void setMenu(Room selectedRoom) {
+//		
+//		ContextMenu contextMenu = new ContextMenu();
+//		MenuItem del_b = new MenuItem("Delete");
+//		del_b.setOnAction((event) -> {
+//			
+//			try {
+//				PreparedStatement ps =
+//						Database.con().prepareStatement
+//		             ("SET FOREIGN_KEY_CHECKS=0;"+
+//		      		 "	DELETE FROM `hoteldatabase`.`rooms` WHERE (`number` = '"+selectedRoom.getNumber()+"');");
+//				
+//				int status = ps.executeUpdate();
+//				
+//				if(status != 0) {
+//					
+//					status_l.setText("!!!Room Deleted!!!");
+//				}
+//			} catch (SQLException e1) {
+//				e1.printStackTrace();
+//			}
+//	
+//		});
+//		contextMenu.getItems().addAll(del_b);
+//		selectedRoom.setContextMenu(contextMenu);
+//		
+//		
+//	}
 	
-		});
-		contextMenu.getItems().addAll(del_b);
-		selectedRoom.setContextMenu(contextMenu);
-		
-		
-	}
-	
-	
-
 }

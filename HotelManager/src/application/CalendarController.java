@@ -81,6 +81,8 @@ public class CalendarController implements Initializable {
 	ObservableList<Reservation> reservations = FXCollections.observableArrayList();
 	ObservableList<LocalDate> busyDates = FXCollections.observableArrayList();
 	ObservableList<LocalDate> checkins = FXCollections.observableArrayList();
+	ObservableList<LocalDate> tempList = FXCollections.observableArrayList();
+
 
 	List<LocalDate> listOfDates = null;
 
@@ -407,6 +409,7 @@ public class CalendarController implements Initializable {
         	dateCell.setText(txt);
     		dateCell.setDisable(false);
     		
+    		addTempbusyDates();
     		disablePastDates(dateCell);
     		setBusyDates(dateCell);
         	select(dateCell);
@@ -447,30 +450,62 @@ public class CalendarController implements Initializable {
    			busyDates.remove(future);
    		}
     	
-		if(future != null && getCheckin() != null && dateCell.getDate().isAfter(future)) {
+		if(future != null && getCheckin() != null 
+				&& dateCell.getDate().isAfter(future)) {
+			
 			dateCell.setDisable(true);
 		}
 		
-    	if(getCheckout() != null 
+		if(getCheckout() != null 
     			&& getCheckin().compareTo(dateCell.getDate()) 
     			* dateCell.getDate().compareTo(getCheckout()) >= 0) {
     		    
     		dateCell.setStyle("-fx-background-color:yellow");
     	
-    	} else {  dateCell.setStyle(null); }
+    	} 
+    	
+    	else 
+   	
+    	{  
+    		dateCell.setStyle(null);
+    	}
+    	
     }
     
     public void setBusyDates(DayNode dateCell) {
     	if(busyDates.contains(dateCell.getDate())) {
-    		dateCell.setStyle("-fx-background-color:aqua");
+    		
+    		if( (getCheckin() != null 
+    				
+    				&& dateCell.getDate().compareTo(getCheckin()) == 0)
+    				
+    				|| (getCheckout() != null 
+    				
+    				&& dateCell.getDate().compareTo(getCheckout()) == 0 ) ) 
+    		{
+    			dateCell.setStyle("-fx-background-color:red");
+    		} 
+    		
+    		else 
+    		
+    		{
+    			dateCell.setStyle("-fx-background-color:aqua");
+    		}
+    		
     	}
+    	
+    }
+    
+    public void addTempbusyDates() {
+    	busyDates.add(getCheckin());
+    	busyDates.add(getCheckout());
     }
     
 	public void select(DayNode selected) 
     {
 		selected.setOnMouseClicked(
     			
-    			e -> {
+    			e -> { if(!busyDates.contains(selected.getDate())) {
     				
 
 
@@ -479,9 +514,7 @@ public class CalendarController implements Initializable {
     					setCheckin(selected.getDate());
     					checkin_x.setText(getCheckin().toString());
     					refresh();
-        				selected.setStyle("-fx-background-color:red");
     					setCheckout_b.setSelected(true);
-    					setLastSelected(selected);
     				} 
     			
     				else if(setCheckout_b.isSelected() && getCheckin() != null)
@@ -489,9 +522,7 @@ public class CalendarController implements Initializable {
     					setCheckout(selected.getDate());
         				checkout_x.setText(getCheckout().toString());
         				refresh();
-        				getLastSelected().setStyle("-fx-background-color:red");
-        				selected.setStyle("-fx-background-color:red");
-
+        				
         				setCheckin_b.setOnMouseClicked(checkin -> {
         					
         					checkout_x.setText("<-- Click to choose");
@@ -508,8 +539,12 @@ public class CalendarController implements Initializable {
         				checkout_x.setText("Please! Select Check-in first");
         			}
     				setTotalPrice(calcPrice(getCheckin(),getCheckout()));
-    				totalPrice_x.setText(getTotalPrice()+" LEK");	
-    			});
+    				totalPrice_x.setText(getTotalPrice()+" LEK");
+    				
+    			}
+    			
+    	  });
+		
     }
 	
     public void previousMonth() 
