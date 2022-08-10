@@ -8,7 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -17,14 +17,11 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class Room  extends Button {
+public class Room  extends Label {
 	
 	private SimpleIntegerProperty number;
 	private SimpleStringProperty type;
 	private SimpleIntegerProperty price;
-	
-	
-
 	
 	public Room(int number, String type,int price) {
 		

@@ -79,7 +79,7 @@ public class CalendarController implements Initializable {
         
     //New Reservation variables:
 	ObservableList<Reservation> reservations = FXCollections.observableArrayList();
-	ObservableList<LocalDate> busyDates = FXCollections.observableArrayList();
+	static ObservableList<LocalDate> busyDates = FXCollections.observableArrayList();
 	ObservableList<LocalDate> checkins = FXCollections.observableArrayList();
 	ObservableList<LocalDate> tempList = FXCollections.observableArrayList();
 
@@ -147,7 +147,7 @@ public class CalendarController implements Initializable {
 				PreparedStatement ps =
 						Database.con().prepareStatement(""
 								+ "INSERT INTO `hoteldatabase`.`reservations` "
-								+ "(`name`, `surname`, `check_in`, `check_out`, `total_price`, `created_at`, `paid`, `number`) "
+								+ "(`name`, `surname`, `check_in`, `check_out`, `total_price`, `created_at`, `busy`, `number`) "
 								+ "VALUES ('"
 								+ name_x.getText()
 								+ "', '"
