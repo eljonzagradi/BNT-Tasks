@@ -44,5 +44,6 @@
       </Label>
       <ToggleButton fx:id="viewAvailableRooms_b" layoutX="237.0" layoutY="14.0" mnemonicParsing="false" onAction="#refresh" text="View Available" />
       <ToggleButton fx:id="viewAllRooms_b" layoutX="171.0" layoutY="14.0" mnemonicParsing="false" onAction="#refresh" text="View All" />
+      <Button layoutX="709.0" layoutY="14.0" mnemonicParsing="false" text="Edit Rooms" />
    </children>
 </AnchorPane>

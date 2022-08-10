@@ -164,7 +164,7 @@
             <TableColumn fx:id="createdAt_c" maxWidth="211.0" minWidth="-1.0" prefWidth="166.0" text="Created At" />
          </columns>
       </TableView>
-      <Button fx:id="deleteReservation" layoutX="718.0" layoutY="480.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="72.0" text="Delete" />
+      <Button fx:id="deleteReservation" layoutX="718.0" layoutY="480.0" mnemonicParsing="false" onAction="#clickDeleteReservation" prefHeight="25.0" prefWidth="72.0" text="Delete" />
       <Label fx:id="errorsDisplay" alignment="CENTER" contentDisplay="CENTER" layoutX="551.0" layoutY="366.0" prefHeight="29.0" prefWidth="238.0" textFill="RED" />
       <RadioButton fx:id="setCheckin_b" layoutX="555.0" layoutY="193.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="89.0" text="Check-in">
          <font>

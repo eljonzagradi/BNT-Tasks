@@ -13,10 +13,9 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
-import javax.swing.JOptionPane;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
@@ -26,7 +25,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -145,28 +147,29 @@ public class CalendarController implements Initializable {
 		if(!areEmpty()) {
 			try {
 				PreparedStatement ps =
-						Database.con().prepareStatement(""
-								+ "INSERT INTO `hoteldatabase`.`reservations` "
-								+ "(`name`, `surname`, `check_in`, `check_out`, `total_price`, `created_at`, `busy`, `number`) "
-								+ "VALUES ('"
-								+ name_x.getText()
-								+ "', '"
-								+ lastName_x.getText()
-								+ "', '"
-								+ java.sql.Date.valueOf(getCheckin()) 
-								+ "', '"
-								+ java.sql.Date.valueOf(getCheckout())
-								+ "', '"
-								+ getTotalPrice()
-								+ "', '"
-								+ LocalDateTime.now()
-								+ "', '"
-								+ "1"
-								+ "', '"
-								+ getSelectedRoom()
-								+ "');\r\n"
+						Database.con().prepareStatement
+						("INSERT INTO `hoteldatabase`.`reservations` "
+						+ "(`name`, `surname`, `check_in`, `check_out`, `total_price`, `created_at`, `busy`, `number`) "
+						+ "VALUES ('"
+						+ name_x.getText()
+						+ "', '"
+					    + lastName_x.getText()
+						+ "', '"
+						+ java.sql.Date.valueOf(getCheckin()) 
+						+ "', '"
+						+ java.sql.Date.valueOf(getCheckout())
+						+ "', '"
+						+ getTotalPrice()
+						+ "', '"
+						+ LocalDateTime.now()
+						+ "', '"
+						+ "1"
+						+ "', '"
+						+ getSelectedRoom()
+						+ "');\r\n"
+						
 								);
-
+				
 				ps.executeUpdate();
 				
 				name_x.clear();
@@ -181,20 +184,21 @@ public class CalendarController implements Initializable {
 				setCheckout(null);
 			    refresh();
 			}
-
 			
 			catch (SQLException e1) {
+				
 				e1.printStackTrace();
 				
 			}
-		} else { 
+			
+		} 
+		
+		else { 
 			errorsDisplay.setText("Please Complete all the required fields"); 
 		}
 		
-		
-		
 	}
-		
+	
 	public void refresh() {
 		reservations.clear();
         busyDates.clear();
@@ -204,41 +208,57 @@ public class CalendarController implements Initializable {
 	}
 		
 	public void someInitalValues() {
+		
 		setCheckin_b.setSelected(true);
 		setCheckin_b.setToggleGroup(toggleGR);
 		setCheckout_b.setToggleGroup(toggleGR);
-		room_x.setText("ROOM: " + getSelectedRoom());
+		room_x.setText("ROOM: " + getSelectedRoom());		
+	}
+	
+	public void clickDeleteReservation() {
 		
-		deleteReservation.setOnAction(e -> {
-		    Reservation selectedItem = reservationsTable.getSelectionModel().getSelectedItem();
-		    if (selectedItem != null) {
-		    	
-		        int action = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?");
-		        if(action == 0) {
-		        try {
-		        	PreparedStatement statement = Database.con().prepareStatement(
-		        			
-		        			  "DELETE FROM `hoteldatabase`.`reservations` "
-		        			+ "WHERE (`id_reservation` = ? );");
-		        	
-					statement.setInt(1, selectedItem.getReservationId());
-			        statement.executeUpdate();
-			        setCheckin(null);
-			        setCheckout(null);
-			   	    refresh();
-			   	    
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-		        }}
-		    });
+		Reservation selectedItem = 
+				reservationsTable.getSelectionModel().getSelectedItem();
+		
+		if (selectedItem != null) {
+			
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+	    	alert.setTitle("Confirmation Dialog");
+	    	alert.setHeaderText(null);
+	    	alert.setContentText("Do you want to delete this reservation?");
+
+	    	Optional<ButtonType> result = alert.showAndWait();
+	    	
+	    	if (result.get() == ButtonType.OK) {
+	    		
+	    		try {
+	    			
+	    			PreparedStatement statement = Database.con().prepareStatement(
+	    					"DELETE FROM `hoteldatabase`.`reservations` "
+	    			+ "WHERE (`id_reservation` = ? );");
+	    			
+	    			statement.setInt(1, selectedItem.getReservationId());
+		            statement.executeUpdate();
+		            setCheckin(null);
+		            setCheckout(null);
+		            refresh();
+		            
+	    		} catch (SQLException e1) {
+	    			e1.printStackTrace();
+	    			
+	    		}
+	    		
+	    	}
+	    	
+		}
+		
 	}
 	
 	public long calcPrice(LocalDate checkin, LocalDate checkout) {
-    	
-    	long price = 0;
+		
+		long price = 0;
     	long daysNo = 0;
-    		    	
+    	
     	if(checkin != null && checkout != null) {
     		
     		daysNo = Duration.between(
@@ -246,14 +266,11 @@ public class CalendarController implements Initializable {
     				checkout.atStartOfDay()).toDays();
     		
     				price = getPriceNight() * daysNo;
-    				
-    	} else {
-    		
-			totalPrice_x.setText(getTotalPrice()+" LEK");
-    		
     	}
-		return price;
-    }
+    	
+    	return price;
+    	
+	}
 	
 	public boolean areEmpty() {
 		
@@ -550,8 +567,6 @@ public class CalendarController implements Initializable {
     public void previousMonth() 
     {
         currentYearMonth = currentYearMonth.minusMonths(1);
-		reservations.clear();
-        loadDataFromDB();
         populateCalendar(currentYearMonth);
 
     }
@@ -559,8 +574,6 @@ public class CalendarController implements Initializable {
     public void nextMonth() 
     {
         currentYearMonth = currentYearMonth.plusMonths(1);
-		reservations.clear();
-        loadDataFromDB();
         populateCalendar(currentYearMonth);
 
     }

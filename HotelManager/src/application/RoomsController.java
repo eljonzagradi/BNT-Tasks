@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.swing.JOptionPane;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -93,6 +93,12 @@ public class RoomsController implements Initializable {
 		    		if(status != 0) {
 		    			roomList.add(roomNum);
 		    			refresh();
+		    			Alert alert = new Alert(AlertType.INFORMATION);
+		    			alert.setTitle("Information Dialog");
+		    			alert.setHeaderText(null);
+		    			alert.setContentText("!!!!Success!!!!");
+
+		    			alert.showAndWait();
 		    			
 		    		}
 		    		
@@ -104,8 +110,12 @@ public class RoomsController implements Initializable {
 		    	
 		    } else {
 		    	
-		    	JOptionPane.showMessageDialog(null, "Room Exists",
-				      "Hey!", JOptionPane.ERROR_MESSAGE);
+		    	Alert alert = new Alert(AlertType.ERROR);
+		    	alert.setTitle("Error Dialog");
+		    	alert.setHeaderText(null);
+		    	alert.setContentText("Room Exists");
+
+		    	alert.showAndWait();
 		    	
 		    }
 		    
