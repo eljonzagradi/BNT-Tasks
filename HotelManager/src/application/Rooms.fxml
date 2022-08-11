@@ -12,7 +12,6 @@
       <TextField fx:id="price_x" layoutX="14.0" layoutY="198.0" prefHeight="41.0" prefWidth="149.0" promptText="Price" />
       <Label fx:id="currentDate_l" layoutX="14.0" layoutY="14.0" prefHeight="41.0" prefWidth="149.0" />
       <TextField fx:id="room_x" layoutX="14.0" layoutY="148.0" prefHeight="41.0" prefWidth="149.0" promptText="Room Num" />
-      <ChoiceBox fx:id="type_x" layoutX="14.0" layoutY="248.0" prefHeight="30.0" prefWidth="150.0" />
       <Button fx:id="addRoom_b" layoutX="14.0" layoutY="288.0" mnemonicParsing="false" onAction="#clickAddRoom" prefHeight="25.0" prefWidth="149.0" text="Add Room" />
       <ScrollPane fitToWidth="true" layoutX="171.0" layoutY="49.0" prefHeight="522.0" prefWidth="622.0">
          <content>
@@ -45,5 +44,6 @@
       <ToggleButton fx:id="viewAvailableRooms_b" layoutX="237.0" layoutY="14.0" mnemonicParsing="false" onAction="#refresh" text="View Available" />
       <ToggleButton fx:id="viewAllRooms_b" layoutX="171.0" layoutY="14.0" mnemonicParsing="false" onAction="#refresh" text="View All" />
       <Button layoutX="709.0" layoutY="14.0" mnemonicParsing="false" text="Edit Rooms" />
+      <ComboBox fx:id="type_x" editable="true" layoutX="14.0" layoutY="246.0" prefWidth="150.0" promptText="Room Categories" />
    </children>
 </AnchorPane>

@@ -60,7 +60,6 @@ public class CalendarController implements Initializable {
 	@FXML private Button nextMonth;
 	@FXML private Text calendarTitle;
 
-	
 	//Calendar variables:
     private ArrayList<DayNode> allCalendarDays = new ArrayList<>(35);
     private YearMonth currentYearMonth;
@@ -120,10 +119,6 @@ public class CalendarController implements Initializable {
 	
 	public long getTotalPrice() {
 		return totalPrice;
-	}
-	
-	public void setLastSelected(DayNode lastSelected) {
-		this.lastSelected = lastSelected;
 	}
 		
 	public void setCheckin(LocalDate checkin) {
@@ -212,7 +207,21 @@ public class CalendarController implements Initializable {
 		setCheckin_b.setSelected(true);
 		setCheckin_b.setToggleGroup(toggleGR);
 		setCheckout_b.setToggleGroup(toggleGR);
-		room_x.setText("ROOM: " + getSelectedRoom());		
+		room_x.setText("ROOM: " + getSelectedRoom());
+		
+		setCheckin_b.setOnMouseClicked(checkin -> {
+			
+			checkout_x.setText("<-- Click to choose");
+			checkin_x.setText("<-- Click to choose");
+			totalPrice_x.setText(" ^ Choose ^");
+			busyDates.clear();
+			setCheckin(null);
+			setCheckout(null);
+			refresh();
+			
+		}
+		
+				);
 	}
 	
 	public void clickDeleteReservation() {
@@ -292,7 +301,8 @@ public class CalendarController implements Initializable {
 	}
 	
 	public void clickChangeRoom() 
-    {
+    { 
+		busyDates.clear();
 		
 		Stage stage = (Stage) changeRoom_b.getScene().getWindow();
 	    stage.close();
@@ -522,45 +532,39 @@ public class CalendarController implements Initializable {
     {
 		selected.setOnMouseClicked(
     			
-    			e -> { if(!busyDates.contains(selected.getDate())) {
+    			e -> { 
     				
-
-
-    				if(setCheckin_b.isSelected()) 
-    				{  
-    					setCheckin(selected.getDate());
-    					checkin_x.setText(getCheckin().toString());
-    					refresh();
-    					setCheckout_b.setSelected(true);
+    				if(!busyDates.contains(selected.getDate())) 
+    				
+    				{
+    					
+    					if(setCheckin_b.isSelected())
+    					
+    					{
+    						setCheckin(selected.getDate());
+    						checkin_x.setText(getCheckin().toString());
+    						refresh();
+    						setCheckout_b.setSelected(true);
     				} 
     			
     				else if(setCheckout_b.isSelected() && getCheckin() != null)
-    			   	{
+    			   	
+    				{
     					setCheckout(selected.getDate());
         				checkout_x.setText(getCheckout().toString());
         				refresh();
         				
-        				setCheckin_b.setOnMouseClicked(checkin -> {
-        					
-        					checkout_x.setText("<-- Click to choose");
-        					checkin_x.setText("<-- Click to choose");
-        					totalPrice_x.setText(" ^ Choose ^");
-        					setLastSelected(null);
-        					busyDates.clear();
-        					setCheckin(null);
-        					setCheckout(null);
-        					refresh();	
-        				});
-        			} else if(setCheckout_b.isSelected() && getCheckin() == null) {
-        				
-        				checkout_x.setText("Please! Select Check-in first");
+    				} else if(setCheckout_b.isSelected() && getCheckin() == null) {
+    					
+    					checkout_x.setText("Please! Select Check-in first");
         			}
-    				setTotalPrice(calcPrice(getCheckin(),getCheckout()));
-    				totalPrice_x.setText(getTotalPrice()+" LEK");
+    					
+    					setTotalPrice(calcPrice(getCheckin(),getCheckout()));
+    					totalPrice_x.setText(getTotalPrice()+" LEK");
+    					
+    				}
     				
-    			}
-    			
-    	  });
+    			});
 		
     }
 	

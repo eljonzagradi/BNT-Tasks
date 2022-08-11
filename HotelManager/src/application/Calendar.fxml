@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.CalendarController">
+<AnchorPane prefHeight="644.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.CalendarController">
    <children>
       <VBox fx:id="view" layoutX="3.0" layoutY="31.0" prefHeight="378.0" prefWidth="549.0" spacing="5.0">
          <children>
@@ -154,17 +154,17 @@
          <font>
             <Font name="System Bold Italic" size="11.0" />
          </font></Button>
-      <TableView fx:id="reservationsTable" layoutX="14.0" layoutY="411.0" prefHeight="187.0" prefWidth="700.0">
+      <TableView fx:id="reservationsTable" layoutX="13.0" layoutY="409.0" prefHeight="187.0" prefWidth="774.0">
          <columns>
             <TableColumn fx:id="name_c" maxWidth="100.0" minWidth="-1.0" prefWidth="92.0" text="Name" />
             <TableColumn fx:id="lastname_c" maxWidth="100.0" minWidth="-1.0" prefWidth="92.0" text="Last Name" />
             <TableColumn fx:id="checkin_c" maxWidth="129.0" minWidth="-1.0" prefWidth="129.0" text="Check-in" />
             <TableColumn fx:id="checkout_c" maxWidth="137.0" minWidth="-1.0" prefWidth="115.0" text="Check-out" />
             <TableColumn fx:id="totalPrice_c" maxWidth="120.0" minWidth="-1.0" prefWidth="105.0" text="Total Price (LEK)" />
-            <TableColumn fx:id="createdAt_c" maxWidth="211.0" minWidth="-1.0" prefWidth="166.0" text="Created At" />
+            <TableColumn fx:id="createdAt_c" maxWidth="247.0" minWidth="-1.0" prefWidth="241.0" text="Created At" />
          </columns>
       </TableView>
-      <Button fx:id="deleteReservation" layoutX="718.0" layoutY="480.0" mnemonicParsing="false" onAction="#clickDeleteReservation" prefHeight="25.0" prefWidth="72.0" text="Delete" />
+      <Button fx:id="deleteReservation" layoutX="14.0" layoutY="605.0" mnemonicParsing="false" onAction="#clickDeleteReservation" prefHeight="25.0" prefWidth="72.0" text="Delete" />
       <Label fx:id="errorsDisplay" alignment="CENTER" contentDisplay="CENTER" layoutX="551.0" layoutY="366.0" prefHeight="29.0" prefWidth="238.0" textFill="RED" />
       <RadioButton fx:id="setCheckin_b" layoutX="555.0" layoutY="193.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="89.0" text="Check-in">
          <font>

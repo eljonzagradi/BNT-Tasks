@@ -18,7 +18,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
@@ -34,7 +34,7 @@ public class RoomsController implements Initializable {
 
 	@FXML private TextField room_x;
 	@FXML private TextField price_x;
-	@FXML private ChoiceBox<String> type_x;
+	@FXML private ComboBox<String> type_x;
 	@FXML private Button addRoom_b;
 	@FXML private GridPane roomLayout;
 	@FXML private Label currentDate_l;
@@ -45,6 +45,7 @@ public class RoomsController implements Initializable {
 	ToggleGroup tg = new ToggleGroup();
 
 	List<Integer> roomList = new ArrayList<Integer>();
+	ObservableList<String> roomCategories = FXCollections.observableArrayList();
 	LocalDate todayDate = LocalDate.now();
 	
 	public void refresh() {
@@ -57,7 +58,7 @@ public class RoomsController implements Initializable {
 		
 		if(     room_x.getText().isBlank()
 			||  price_x.getText().isBlank()
-			||  type_x.getValue() == "Room Types") 
+			||  type_x.getValue() == null) 
 		
 		{
 			return true;
@@ -84,13 +85,15 @@ public class RoomsController implements Initializable {
 		    	
 		    	try {
 		    		
-		    		PreparedStatement ps =
+		    		PreparedStatement insertRoom =
 		    				Database.con().prepareStatement
-		    				("INSERT INTO `hoteldatabase`.`rooms` (`number`, `class`, `price`) "
-		    				+ "VALUES ('"+roomNum+"', '"+roomType+"', '"+roomPrice+"');");
+		    				("INSERT INTO `hoteldatabase`.`rooms` (`number`, `category`, `price`) "	
+		    				+ "VALUES ('"+roomNum+"', '"+roomType+"', '"+roomPrice+"');\r\n");
 		    		
-		    		int status = ps.executeUpdate();
+		    		int status = insertRoom.executeUpdate();
 		    		if(status != 0) {
+		    			addCategoty(type_x);
+		    			roomCategories.add(roomType);
 		    			roomList.add(roomNum);
 		    			refresh();
 		    			Alert alert = new Alert(AlertType.INFORMATION);
@@ -131,6 +134,30 @@ public class RoomsController implements Initializable {
 		
 	}
 	
+	public void addCategoty(ComboBox<String> cb ) {
+		
+		String category = cb.getEditor().getText();
+		
+		if(!roomCategories.contains(category)) {
+			
+			try {
+				
+				PreparedStatement availableRooms = Database.con().prepareStatement
+					("INSERT INTO `hoteldatabase`.`roomcategories` (`name`) VALUES ('"+category+"');");
+				     
+				availableRooms.execute();
+				} 
+			
+			
+			catch (SQLException e) {
+					e.printStackTrace();
+
+			}
+			
+		}
+		
+	}
+	
 	public void loadRooms() {
 
 		int rowInx = 0;
@@ -139,7 +166,7 @@ public class RoomsController implements Initializable {
 		
 		try {
 			PreparedStatement availableRooms = Database.con().prepareStatement
-					("SELECT ro.number,class,price,check_in,check_out\r\n"
+					("SELECT ro.number,category,price,check_in,check_out\r\n"
 			+ "FROM  hoteldatabase.rooms ro\r\n"
 			+ "LEFT JOIN hoteldatabase.reservations r\r\n"
 			+ "USING (number)  \r\n"
@@ -150,7 +177,7 @@ public class RoomsController implements Initializable {
 			+ "ORDER BY ro.number,check_in");
 			
 			PreparedStatement allRooms = Database.con().prepareStatement
-					( "SELECT ro.number,class,price,check_in, check_out \r\n"
+					( "SELECT ro.number,category,price,check_in, check_out \r\n"
 			+ "FROM `hoteldatabase`.rooms ro\r\n"
 		    + "LEFT JOIN `hoteldatabase`.reservations r \r\n"
 			+ "ON ro.number = r.number \r\n"
@@ -168,7 +195,7 @@ public class RoomsController implements Initializable {
 				Date checkin = resultSet.getDate("check_in");
 			    Date checkout = resultSet.getDate("check_out");
 			    int roomNum = resultSet.getInt("number");
-			    String roomType = resultSet.getString("class");
+			    String roomType = resultSet.getString("category");
 			    int roomPrice = resultSet.getInt("price");
 			    Room room = new Room (roomNum,roomType,roomPrice );
 			    if(!roomList.contains(roomNum)) {
@@ -209,25 +236,31 @@ public class RoomsController implements Initializable {
 	 }
 
 	
-	
 	public void choiceBoxSetup() {
-		String addType = "Click to add new Room Type";
 		
-		type_x.setValue("Room Types");
+		try {
+			PreparedStatement loadCategories = Database.con().prepareStatement("select * from hoteldatabase.roomcategories");
+			
+			ResultSet rs = loadCategories.executeQuery();
+			
+			while(rs.next()) {
 				
-		ObservableList<String> roomTypes = 
-			    FXCollections
-				.observableArrayList(
-						"Single","Double",
-						"Twin","Suite");
+				String roomCat = rs.getString("name");
+				
+				if(!roomCategories.contains(roomCat)) {
+				
+				roomCategories.add(roomCat);
+				
+				}
+				
+			}
+			
+			type_x.setItems(roomCategories);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
-		type_x.setItems(roomTypes);
-		roomTypes.add(addType);
-		type_x.setOnAction(event -> {
-			if(type_x.getValue() == addType) {
-
-		    }
-		});
 	}
 
 	@Override
