@@ -68,15 +68,16 @@ public class CalendarController implements Initializable {
 	@FXML private Label room_x;
     @FXML private TextField name_x;
 	@FXML private TextField lastName_x;
-    @FXML Label checkin_x;
-    @FXML Label checkout_x;
-    @FXML ToggleButton setCheckin_b;
-    @FXML ToggleButton setCheckout_b;
-	@FXML private Label totalPrice_x;
-    @FXML Button addReservation_b;
-    @FXML Button changeRoom_b;
-    @FXML Button deleteReservation;
-    @FXML Label errorsDisplay;
+    @FXML private Label checkin_x;
+    @FXML private Label checkout_x;
+    @FXML private ToggleButton setCheckin_b;
+    @FXML private ToggleButton setCheckout_b;
+	@FXML private TextField totalPrice_x;
+    @FXML private Button addReservation_b;
+    @FXML private Button changeRoom_b;
+    @FXML private Button deleteReservation;
+    @FXML private TextField phonenum_x;
+    @FXML private Label errorsDisplay;
         
     //New Reservation variables:
 	ObservableList<Reservation> reservations = FXCollections.observableArrayList();
@@ -144,21 +145,21 @@ public class CalendarController implements Initializable {
 				PreparedStatement ps =
 						Database.con().prepareStatement
 						("INSERT INTO `hoteldatabase`.`reservations` "
-						+ "(`name`, `surname`, `check_in`, `check_out`, `total_price`, `created_at`, `busy`, `number`) "
+						+ "(`name`, `surname`,`phone_number`, `check_in`, `check_out`, `total_price`, `created_at`, `number`) "
 						+ "VALUES ('"
 						+ name_x.getText()
 						+ "', '"
 					    + lastName_x.getText()
 						+ "', '"
+						+ phonenum_x.getText()
+						+ "', '"
 						+ java.sql.Date.valueOf(getCheckin()) 
 						+ "', '"
 						+ java.sql.Date.valueOf(getCheckout())
 						+ "', '"
-						+ getTotalPrice()
+						+ Long.parseLong(totalPrice_x.getText())
 						+ "', '"
 						+ LocalDateTime.now()
-						+ "', '"
-						+ "1"
 						+ "', '"
 						+ getSelectedRoom()
 						+ "');\r\n"
@@ -169,11 +170,11 @@ public class CalendarController implements Initializable {
 				
 				name_x.clear();
 				lastName_x.clear();
-				checkin_x.setText("<-- Click to choose");
-				checkout_x.setText("<-- Click to choose");
+				checkin_x.setText("<-- ");
+				checkout_x.setText("<-- ");
 				totalPrice_x.setText(" ^ Choose ^");
+				phonenum_x.clear();
 				setCheckin_b.setSelected(true);
-				setCheckout_b.setSelected(false);
 				errorsDisplay.setText(null);
 				setCheckin(null);
 				setCheckout(null);
@@ -194,6 +195,19 @@ public class CalendarController implements Initializable {
 		
 	}
 	
+	public void clickClear() {
+		name_x.clear();
+		lastName_x.clear();
+		checkin_x.setText("<-- ");
+		checkout_x.setText("<-- ");
+		totalPrice_x.setText(" ^ Choose ^");
+		setCheckin_b.setSelected(true);
+		errorsDisplay.setText(null);
+		setCheckin(null);
+		setCheckout(null);
+	    refresh();
+	}
+	
 	public void refresh() {
 		reservations.clear();
         busyDates.clear();
@@ -201,6 +215,33 @@ public class CalendarController implements Initializable {
 		loadDataFromDB();
 		populateCalendar(currentYearMonth);
 	}
+	
+	public void cilckEditReservation() {
+		
+		Reservation selectedItem = 
+				reservationsTable.getSelectionModel().getSelectedItem();
+		
+		if (selectedItem != null) {
+			
+			setCheckin(null);
+			setCheckout(null);
+			LocalDate start = selectedItem.getCheckin().get().toLocalDate(); 
+			LocalDate end = selectedItem.getCheckout().get().toLocalDate();
+			name_x.setText(selectedItem.getName().get());
+			lastName_x.setText(selectedItem.getLastName().get());
+			checkin_x.setText(start.toString());
+			checkout_x.setText(end.toString());
+			totalPrice_x.setText(Long.toString(selectedItem.getTotalPrice().get()));
+			
+			List<LocalDate> temp = (
+					start)
+					.datesUntil(end)
+					.collect(Collectors.toList());
+			busyDates.removeAll(temp);
+			populateCalendar(currentYearMonth);
+
+	    	}	
+		}
 		
 	public void someInitalValues() {
 		
@@ -210,18 +251,8 @@ public class CalendarController implements Initializable {
 		room_x.setText("ROOM: " + getSelectedRoom());
 		
 		setCheckin_b.setOnMouseClicked(checkin -> {
-			
-			checkout_x.setText("<-- Click to choose");
-			checkin_x.setText("<-- Click to choose");
-			totalPrice_x.setText(" ^ Choose ^");
-			busyDates.clear();
-			setCheckin(null);
-			setCheckout(null);
-			refresh();
-			
-		}
-		
-				);
+			clickClear();
+		});
 	}
 	
 	public void clickDeleteReservation() {
@@ -286,6 +317,7 @@ public class CalendarController implements Initializable {
 		if (
 				name_x.getText().isBlank()
 			||	lastName_x.getText().isBlank()
+			||  phonenum_x.getText().isEmpty()
 			||  getCheckin() == null
 			||  getCheckout() == null
 			||  getTotalPrice() <= 0
@@ -323,7 +355,7 @@ public class CalendarController implements Initializable {
 	public void tableSetup() 
 	{
 		name_c.setCellValueFactory(name -> name.getValue().getName());
-		lastname_c.setCellValueFactory(surname -> surname.getValue().getSurname());
+		lastname_c.setCellValueFactory(surname -> surname.getValue().getLastName());
 		checkin_c.setCellValueFactory(checkin -> checkin.getValue().getCheckin());
 		checkout_c.setCellValueFactory(checkout -> checkout.getValue().getCheckout());
 		totalPrice_c.setCellValueFactory(totalPrice -> totalPrice.getValue().getTotalPrice());
@@ -349,6 +381,7 @@ public class CalendarController implements Initializable {
 				int resevation_id = resultSet.getInt("id_reservation");
 		    	String name = resultSet.getString("name");
 		    	String lastname  = resultSet.getString("surname");
+		    	int phonenum = resultSet.getInt("phone_number");
 		    	Date checkin  = resultSet.getDate("check_in");
 		    	Date checkout  = resultSet.getDate("check_out");
 		    	int totalPrice  = resultSet.getInt("total_price");
@@ -360,11 +393,12 @@ public class CalendarController implements Initializable {
 		    					getSelectedRoom(),
 		    					name,
 		    					lastname,
+		    					phonenum,
 		    				    checkin,
 		    					checkout,
 		    					totalPrice,
-		    					timestamp.toLocalDateTime(),
-		    					true));
+		    					timestamp.toLocalDateTime()
+		    					));
 		    	
 				reservationsTable.setItems(reservations);
 
@@ -543,7 +577,7 @@ public class CalendarController implements Initializable {
     					{
     						setCheckin(selected.getDate());
     						checkin_x.setText(getCheckin().toString());
-    						refresh();
+    						populateCalendar(currentYearMonth);
     						setCheckout_b.setSelected(true);
     				} 
     			
@@ -552,15 +586,14 @@ public class CalendarController implements Initializable {
     				{
     					setCheckout(selected.getDate());
         				checkout_x.setText(getCheckout().toString());
-        				refresh();
-        				
+        				refresh();        				
     				} else if(setCheckout_b.isSelected() && getCheckin() == null) {
     					
-    					checkout_x.setText("Please! Select Check-in first");
+    					checkout_x.setText("^Check-in first");
         			}
     					
     					setTotalPrice(calcPrice(getCheckin(),getCheckout()));
-    					totalPrice_x.setText(getTotalPrice()+" LEK");
+    					totalPrice_x.setText(Long.toString(getTotalPrice()));
     					
     				}
     				

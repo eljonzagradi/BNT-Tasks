@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="644.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.CalendarController">
+<AnchorPane prefHeight="639.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.CalendarController">
    <children>
-      <VBox fx:id="view" layoutX="3.0" layoutY="31.0" prefHeight="378.0" prefWidth="549.0" spacing="5.0">
+      <VBox fx:id="view" layoutX="3.0" layoutY="31.0" prefHeight="378.0" prefWidth="536.0" spacing="5.0" AnchorPane.leftAnchor="10.0">
          <children>
             <HBox alignment="BOTTOM_CENTER" prefHeight="29.0" prefWidth="553.0">
                <children>
@@ -109,72 +109,126 @@
             </GridPane>
          </children>
       </VBox>
-      <Label fx:id="checkout_x" alignment="CENTER" layoutX="639.0" layoutY="236.0" prefHeight="35.0" prefWidth="148.0" text="&lt;-- Click to choose">
-         <font>
-            <Font name="System Bold Italic" size="13.0" />
-         </font>
-      </Label>
-      <Label fx:id="checkin_x" alignment="CENTER" layoutX="639.0" layoutY="188.0" prefHeight="35.0" prefWidth="148.0" text="&lt;-- Click to choose">
-         <font>
-            <Font name="System Bold Italic" size="13.0" />
-         </font>
-      </Label>
-      <Button fx:id="addReservation_b" layoutX="555.0" layoutY="324.0" mnemonicParsing="false" onAction="#clickAddReservations" prefHeight="35.0" prefWidth="232.0" text="Add Reservation">
-         <font>
-            <Font name="System Bold Italic" size="15.0" />
-         </font></Button>
-      <TextField fx:id="lastName_x" layoutX="647.0" layoutY="144.0" prefHeight="35.0" prefWidth="139.0" promptText="Enter Client Name" />
-      <TextField fx:id="name_x" layoutX="647.0" layoutY="96.0" prefHeight="35.0" prefWidth="139.0" promptText="Enter Client Name" />
-      <Label fx:id="totalPrice_x" alignment="CENTER" layoutX="649.0" layoutY="279.0" prefHeight="35.0" prefWidth="139.0" text="^ Choose ^">
-         <font>
-            <Font name="System Bold Italic" size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="555.0" layoutY="279.0" prefHeight="45.0" prefWidth="40.0" text="Price:">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="555.0" layoutY="139.0" prefHeight="45.0" prefWidth="80.0" text="Last Name:">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="555.0" layoutY="91.0" prefHeight="45.0" prefWidth="49.0" text="Name:">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </Label>
-      <Label fx:id="room_x" alignment="CENTER" layoutX="554.0" layoutY="56.0" prefHeight="35.0" prefWidth="232.0" text="Selected Room">
-         <font>
-            <Font name="System Bold" size="20.0" />
-         </font>
-      </Label>
-      <Button fx:id="changeRoom_b" layoutX="696.0" layoutY="14.0" mnemonicParsing="false" onAction="#clickChangeRoom" prefHeight="35.0" prefWidth="89.0" text="Change Room">
+      <Button fx:id="changeRoom_b" layoutX="670.0" layoutY="31.0" mnemonicParsing="false" onAction="#clickChangeRoom" prefHeight="35.0" prefWidth="89.0" text="Change Room">
          <font>
             <Font name="System Bold Italic" size="11.0" />
          </font></Button>
-      <TableView fx:id="reservationsTable" layoutX="13.0" layoutY="409.0" prefHeight="187.0" prefWidth="774.0">
+      <TableView fx:id="reservationsTable" layoutX="3.0" layoutY="409.0" prefHeight="193.0" prefWidth="536.0" AnchorPane.leftAnchor="10.0">
          <columns>
-            <TableColumn fx:id="name_c" maxWidth="100.0" minWidth="-1.0" prefWidth="92.0" text="Name" />
-            <TableColumn fx:id="lastname_c" maxWidth="100.0" minWidth="-1.0" prefWidth="92.0" text="Last Name" />
-            <TableColumn fx:id="checkin_c" maxWidth="129.0" minWidth="-1.0" prefWidth="129.0" text="Check-in" />
-            <TableColumn fx:id="checkout_c" maxWidth="137.0" minWidth="-1.0" prefWidth="115.0" text="Check-out" />
-            <TableColumn fx:id="totalPrice_c" maxWidth="120.0" minWidth="-1.0" prefWidth="105.0" text="Total Price (LEK)" />
-            <TableColumn fx:id="createdAt_c" maxWidth="247.0" minWidth="-1.0" prefWidth="241.0" text="Created At" />
+            <TableColumn fx:id="name_c" maxWidth="100.0" minWidth="-1.0" prefWidth="53.0" text="Name" />
+            <TableColumn fx:id="lastname_c" maxWidth="131.0" minWidth="-1.0" prefWidth="72.0" text="Last Name" />
+            <TableColumn fx:id="checkin_c" maxWidth="188.0" minWidth="-1.0" prefWidth="74.0" text="Check-in" />
+            <TableColumn fx:id="checkout_c" maxWidth="222.0" minWidth="-1.0" prefWidth="84.0" text="Check-out" />
+            <TableColumn fx:id="totalPrice_c" maxWidth="198.0" minWidth="-1.0" prefWidth="107.0" text="Total Price (LEK)" />
+            <TableColumn fx:id="createdAt_c" maxWidth="366.0" minWidth="-1.0" prefWidth="145.0" text="Created At" />
          </columns>
       </TableView>
-      <Button fx:id="deleteReservation" layoutX="14.0" layoutY="605.0" mnemonicParsing="false" onAction="#clickDeleteReservation" prefHeight="25.0" prefWidth="72.0" text="Delete" />
-      <Label fx:id="errorsDisplay" alignment="CENTER" contentDisplay="CENTER" layoutX="551.0" layoutY="366.0" prefHeight="29.0" prefWidth="238.0" textFill="RED" />
-      <RadioButton fx:id="setCheckin_b" layoutX="555.0" layoutY="193.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="89.0" text="Check-in">
-         <font>
-            <Font name="System Bold Italic" size="14.0" />
-         </font>
-      </RadioButton>
-      <RadioButton fx:id="setCheckout_b" layoutX="555.0" layoutY="241.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="106.0" text="Check-out">
-         <font>
-            <Font name="System Bold Italic" size="14.0" />
-         </font>
-      </RadioButton>
+      <Button fx:id="deleteReservation" layoutX="14.0" layoutY="605.0" mnemonicParsing="false" onAction="#clickDeleteReservation" prefHeight="25.0" prefWidth="72.0" text="Delete" AnchorPane.leftAnchor="10.0" />
+      <Button layoutX="90.0" layoutY="605.0" mnemonicParsing="false" onAction="#cilckEditReservation" text="Modify" />
+      <VBox alignment="CENTER" layoutX="547.0" layoutY="70.0" prefHeight="535.0" prefWidth="200.0" spacing="5.0" AnchorPane.rightAnchor="10.0">
+         <children>
+            <Label fx:id="room_x" alignment="CENTER" prefHeight="40.0" prefWidth="235.0" text="Selected Room">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" prefHeight="40.0" prefWidth="200.0" text="Name:">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="name_x" alignment="CENTER" prefHeight="40.0" prefWidth="200.0" promptText="Enter Client Name">
+               <font>
+                  <Font name="System Bold Italic" size="13.0" />
+               </font>
+            </TextField>
+            <Label alignment="CENTER" prefHeight="40.0" prefWidth="200.0" text="Last Name:">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="lastName_x" alignment="CENTER" prefHeight="40.0" prefWidth="200.0" promptText="Enter Client Name">
+               <font>
+                  <Font name="System Bold Italic" size="13.0" />
+               </font>
+            </TextField>
+            <Label alignment="CENTER" prefHeight="40.0" prefWidth="200.0" text="Phone Number">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="phonenum_x" alignment="CENTER" prefHeight="40.0" prefWidth="200.0" promptText="Enter Client Phone Number">
+               <font>
+                  <Font name="System Bold Italic" size="13.0" />
+               </font>
+            </TextField>
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0">
+               <children>
+                  <RadioButton fx:id="setCheckin_b" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" text="Check-in">
+                     <font>
+                        <Font name="System Bold Italic" size="15.0" />
+                     </font>
+                  </RadioButton>
+                  <Label fx:id="checkin_x" alignment="CENTER" prefHeight="40.0" prefWidth="100.0" text="&lt;-- ">
+                     <font>
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets left="2.5" right="2.5" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0">
+               <children>
+                  <RadioButton fx:id="setCheckout_b" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" text="Check-out">
+                     <font>
+                        <Font name="System Bold Italic" size="14.0" />
+                     </font>
+                  </RadioButton>
+                  <Label fx:id="checkout_x" alignment="CENTER" prefHeight="40.0" prefWidth="100.0" text="&lt;-- ">
+                     <font>
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="2.5" right="2.5" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <opaqueInsets>
+                  <Insets left="2.0" />
+               </opaqueInsets>
+               <VBox.margin>
+                  <Insets left="2.5" right="2.5" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefHeight="40.0" prefWidth="235.0" spacing="2.0">
+               <children>
+                  <Label prefHeight="40.0" prefWidth="40.0" text="Price:">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="totalPrice_x" alignment="CENTER" prefHeight="40.0" prefWidth="125.0" text="^ Choose ^">
+                     <font>
+                        <Font name="System Bold Italic" size="15.0" />
+                     </font>
+                  </TextField>
+                  <Label prefHeight="40.0" prefWidth="30.0" text="LEK">
+                     <font>
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <Button fx:id="addReservation_b" mnemonicParsing="false" onAction="#clickAddReservations" prefHeight="40.0" prefWidth="200.0" text="Add Reservation">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Label fx:id="errorsDisplay" alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="200.0" textFill="RED" />
+         </children>
+      </VBox>
+      <Button layoutX="720.0" layoutY="605.0" mnemonicParsing="false" onAction="#clickClear" text="Clear" AnchorPane.rightAnchor="10.0" />
    </children>
 </AnchorPane>

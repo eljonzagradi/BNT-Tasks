@@ -19,8 +19,8 @@ public class Reservation {
 	private ObjectProperty<Date> checkout;
 	private LongProperty totalPrice;
 	private ObjectProperty<LocalDateTime> createdat;
-	private SimpleBooleanProperty paid;
 	private SimpleIntegerProperty roomNum;
+	private SimpleIntegerProperty phoneNum;
 	private SimpleIntegerProperty reservation_id;
 	
 	public Reservation(
@@ -28,28 +28,29 @@ public class Reservation {
 			int roomNum,
 			String name,
 			String lastName,
+			int phonenum,
 			Date checkin,
 			Date checkout,
 			long totalPrice,
-			LocalDateTime createdat,
-			boolean paid) 
+			LocalDateTime createdat
+			) 
 	{
 		super();
 		this.reservation_id = new SimpleIntegerProperty(reservation_id);
 		this.name = new SimpleStringProperty(name);
 		this.lastName = new SimpleStringProperty(lastName);
+		this.phoneNum = new SimpleIntegerProperty(phonenum);
         this.checkin = new SimpleObjectProperty<Date>(checkin);
         this.checkout = new SimpleObjectProperty<Date>(checkout);
         this.totalPrice = new SimpleLongProperty(totalPrice);
         this.createdat = new SimpleObjectProperty<LocalDateTime>(createdat);
-		this.paid =  new SimpleBooleanProperty(paid);
 	}
 
 	public StringProperty getName() {
 		return name;
 	}
 
-	public StringProperty getSurname() {
+	public StringProperty getLastName() {
 		return lastName;
 	}
 
@@ -69,15 +70,15 @@ public class Reservation {
 		return createdat;
 	}
 
-	public SimpleBooleanProperty getPaid() {
-		return paid;
-	}
-
 	public SimpleIntegerProperty getRoomNum() {
 		return roomNum;
 	}
 	
 	public int getReservationId() {
 		return reservation_id.get();
+	}
+
+	public SimpleIntegerProperty getPhoneNum() {
+		return phoneNum;
 	}
 }
